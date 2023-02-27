@@ -131,8 +131,10 @@
   <ItemGroup>
     <ClCompile Include="display.c" />
     <ClCompile Include="main.c" />
+    <ClCompile Include="vectors.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="vectors.h" />
     <ClInclude Include="display.h" />
   </ItemGroup>
   <ItemGroup>

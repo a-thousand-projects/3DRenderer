@@ -12,13 +12,13 @@ typedef enum
     GRID_DOTS
 }gridMode_t;
 
-int window_height;
-int window_width;
-SDL_Window* window;
-SDL_Renderer* renderer;
-SDL_Texture* colorBufferTexture;
-uint32_t* colorBuffer;
-bool is_running;
+extern int window_height;
+extern int window_width;
+extern SDL_Window* window;
+extern SDL_Renderer* renderer;
+extern SDL_Texture* colorBufferTexture;
+extern uint32_t* colorBuffer;
+extern bool is_running;
 
 
 
@@ -31,5 +31,7 @@ void drawGrid(uint8_t col, uint8_t row, uint32_t color, gridMode_t mode);
 void renderColorBuffer(void);
 bool initialize_window(void);
 void clearColorBuffer(uint32_t color);
+bool checkWindowBounds(uint16_t x, uint16_t y);
+void drawPixel(uint16_t x, uint16_t y, uint32_t color);
 
 #endif

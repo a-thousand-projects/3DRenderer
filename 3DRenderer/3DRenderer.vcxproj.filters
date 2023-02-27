@@ -21,9 +21,15 @@
     <ClCompile Include="display.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="vectors.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="display.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vectors.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

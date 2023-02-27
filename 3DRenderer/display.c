@@ -3,6 +3,13 @@
 #include <SDL.h>
 #include "display.h"
 
+int window_height = 600;
+int window_width = 800;
+SDL_Window* window = NULL;
+SDL_Renderer* renderer = NULL;
+SDL_Texture* colorBufferTexture = NULL;
+uint32_t* colorBuffer = NULL;
+bool is_running = false;
 
 bool initialize_window(void)
 {
@@ -78,6 +85,7 @@ void drawHLine(uint16_t x, uint16_t y, uint16_t length, uint32_t color)
 {
     for (int xd = x; xd < length + x; xd++)
     {
+        drawPixel(xd, y, color);
         colorBuffer[(window_width * y) + xd] = color;
     }
 }
@@ -126,4 +134,15 @@ void clearColorBuffer(uint32_t color)
 
 }
 
+bool checkWindowBounds(uint16_t x, uint16_t y)
+{
+    return (x > 0 && x < window_width && y>0 && y < window_height);
+}
 
+void drawPixel(uint16_t x, uint16_t y, uint32_t color)
+{
+    if  (checkWindowBounds(x, y))
+    {
+        colorBuffer[(window_width * y) + x] = color;
+    }
+}
