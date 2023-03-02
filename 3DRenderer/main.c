@@ -7,8 +7,9 @@
 #define N_POINTS 9*9*9
 vct3_t cubePoints[N_POINTS];
 vct2_t projectedPoints[N_POINTS];
-vct3_t cameraPosition = {0,0,-2};
-float fovFactor = 400;
+vct3_t cameraPosition = {0,0,-4};
+vct3_t cubeRotation = { 0,0,0 };
+float fovFactor = 600;
 
 void setup(void) {
 
@@ -42,12 +43,21 @@ vct2_t project(vct3_t point)
 }
 
 void update(void) {
+
+    cubeRotation.y += 0.001;
+    cubeRotation.x += 0.001;
+    cubeRotation.z += 0.001;
+
+
     for (int i = 0; i < N_POINTS; i++)
     {
         vct3_t point = cubePoints[i];
-        // Move the points away from the camera
-        point.z -= cameraPosition.z;
-        vct2_t projectedPoint = project(point);
+        vct3_t transformedPoint = vec3RotoateY(point, cubeRotation.y);
+        transformedPoint = vec3RotoateZ(transformedPoint, cubeRotation.z);
+       // transformedPoint = vec3RotoateX(transformedPoint, cubeRotation.x);
+        // translate the points away from the camera
+        transformedPoint.z -= cameraPosition.z;
+        vct2_t projectedPoint = project(transformedPoint);
         projectedPoints[i] = projectedPoint;
     }
 }
@@ -55,6 +65,7 @@ void update(void) {
 void render(void)
 {
     
+
     //drawGrid(50, 50, 0x0000FF00, GRID_DOTS);
     for (int i = 0; i < N_POINTS; i++ )
     {
