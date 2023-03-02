@@ -10,6 +10,7 @@ SDL_Renderer* renderer = NULL;
 SDL_Texture* colorBufferTexture = NULL;
 uint32_t* colorBuffer = NULL;
 bool is_running = false;
+uint32_t prevFrameTime=0;
 
 bool initialize_window(void)
 {

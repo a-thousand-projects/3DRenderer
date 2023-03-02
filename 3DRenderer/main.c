@@ -44,10 +44,15 @@ vct2_t project(vct3_t point)
 
 void update(void) {
 
-    cubeRotation.y += 0.001;
+    while (!SDL_TICKS_PASSED(SDL_GetTicks(), prevFrameTime+FRAME_TARGET_TIME));
+
+    prevFrameTime = SDL_GetTicks();
+
+
+    cubeRotation.y += 0.1;
     cubeRotation.x += 0.001;
     cubeRotation.z += 0.001;
-
+    
 
     for (int i = 0; i < N_POINTS; i++)
     {

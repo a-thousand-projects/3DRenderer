@@ -6,6 +6,9 @@
 #include <stdbool.h>
 #include <SDL.h>
 
+#define FPS 30
+#define FRAME_TARGET_TIME (1000/FPS)
+
 typedef enum
 {
     GRID_LINE,
@@ -19,6 +22,7 @@ extern SDL_Renderer* renderer;
 extern SDL_Texture* colorBufferTexture;
 extern uint32_t* colorBuffer;
 extern bool is_running;
+extern uint32_t prevFrameTime;
 
 
 
