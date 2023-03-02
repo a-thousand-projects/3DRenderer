@@ -90,11 +90,20 @@ void drawHLine(uint16_t x, uint16_t y, uint16_t length, uint32_t color)
     }
 }
 
-void drawRect(uint16_t x, uint16_t y, uint16_t height, uint16_t width, uint32_t color)
+void drawPixel(int x, int y, uint32_t color) {
+    if (x >= 0 && x < window_width && y >= 0 && y < window_height) {
+        colorBuffer[(window_width * y) + x] = color;
+    }
+}
+
+void drawRect(int x, int y, int width, int height, uint32_t color)
 {
-    for (uint16_t h = y; h < height + y; h++)
-    {
-        drawHLine(x, h, x + width, color);
+    for (int i = 0; i < width; i++) {
+        for (int j = 0; j < height; j++) {
+            int current_x = x + i;
+            int current_y = y + j;
+            drawPixel(current_x, current_y, color);
+        }
     }
 }
 void destroyWindow(void)
@@ -139,10 +148,10 @@ bool checkWindowBounds(uint16_t x, uint16_t y)
     return (x > 0 && x < window_width && y>0 && y < window_height);
 }
 
-void drawPixel(uint16_t x, uint16_t y, uint32_t color)
-{
-    if  (checkWindowBounds(x, y))
-    {
-        colorBuffer[(window_width * y) + x] = color;
-    }
-}
+//void drawPixel(uint16_t x, uint16_t y, uint32_t color)
+//{
+//    if  (checkWindowBounds(x, y))
+//    {
+//        colorBuffer[(window_width * y) + x] = color;
+//    }
+//}

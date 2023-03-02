@@ -7,7 +7,8 @@
 #define N_POINTS 9*9*9
 vct3_t cubePoints[N_POINTS];
 vct2_t projectedPoints[N_POINTS];
-
+vct3_t cameraPosition = {0,0,-2};
+float fovFactor = 400;
 
 void setup(void) {
 
@@ -21,10 +22,10 @@ void setup(void) {
         window_width, window_height);
     int pointCount = 0;
     for (float x = -1 ;x<=1 ; x += 0.25)
-        for (float y=1; y<=1; y+= 0.25)
-            for (float z = 1; z <= 1; z += 0.25)
+        for (float y=-1; y<=1; y += 0.25)
+            for (float z = -1; z <= 1; z += 0.25)
             {
-                vct3_t newPoint = { x,y,z };
+                vct3_t newPoint = { .x=x,.y=y,.z=z };
                 cubePoints[pointCount++] = newPoint;
             }
 
@@ -34,8 +35,8 @@ void setup(void) {
 vct2_t project(vct3_t point)
 {
     vct2_t projectedPoint = {
-        .x = point.x,
-        .y = point.y
+        .x = (fovFactor * point.x)/point.z,
+        .y = (fovFactor * point.y)/point.z
     };
     return projectedPoint;
 }
@@ -44,6 +45,8 @@ void update(void) {
     for (int i = 0; i < N_POINTS; i++)
     {
         vct3_t point = cubePoints[i];
+        // Move the points away from the camera
+        point.z -= cameraPosition.z;
         vct2_t projectedPoint = project(point);
         projectedPoints[i] = projectedPoint;
     }
@@ -55,7 +58,13 @@ void render(void)
     //drawGrid(50, 50, 0x0000FF00, GRID_DOTS);
     for (int i = 0; i < N_POINTS; i++ )
     {
-        drawRect(projectedPoints[i].x, projectedPoints[i].y,4,4, 0xFFFFFF00);
+        drawRect(
+            projectedPoints[i].x + (window_width/2), 
+            projectedPoints[i].y + (window_height/2),
+            4,
+            4, 
+            0xFFFFFF00);
+        
     }
     renderColorBuffer();
     clearColorBuffer(0x00000000);

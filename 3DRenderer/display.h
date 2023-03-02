@@ -25,13 +25,13 @@ extern bool is_running;
 
 void process_input(void);
 void destroyWindow(void);
-void drawRect(uint16_t x, uint16_t y, uint16_t height, uint16_t width, uint32_t color);
+void drawRect(int x, int y, int width, int height, uint32_t color);
 void drawHLine(uint16_t x, uint16_t y, uint16_t length, uint32_t color);
 void drawGrid(uint8_t col, uint8_t row, uint32_t color, gridMode_t mode);
 void renderColorBuffer(void);
 bool initialize_window(void);
 void clearColorBuffer(uint32_t color);
 bool checkWindowBounds(uint16_t x, uint16_t y);
-void drawPixel(uint16_t x, uint16_t y, uint32_t color);
+void drawPixel(int x, int y, uint32_t color);
 
 #endif
