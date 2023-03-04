@@ -32,6 +32,9 @@
     <ClInclude Include="vectors.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\..\..\SDL\lib\x64\SDL2.dll" />
