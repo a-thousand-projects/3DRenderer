@@ -3,21 +3,10 @@
 #include <SDL.h>
 #include "display.h"
 #include "vectors.h"
+#include "mesh.h"
 
 
-
-
-vct3_t meshCube[N_MESH_VERTICES] = {
-    {.x = -1 , .y = -1 , .z = -1},
-    {.x = -1 , .y = 1 , .z = -1},
-    {.x = 1 , .y = 1 , .z = -1},
-    {.x = 1 , .y = -1 , .z = -1},
-    {.x = 1 , .y = 1 , .z = 1},
-    {.x = 1 , .y = -1 , .z = 1},
-    {.x = -1 , .y = 1 , .z = 1},
-    {.x = -1 , .y = -1 , .z = 1},
-};
-
+triange_t triToRender[N_MESH_FACES];
 vct3_t cameraPosition = {0,0,-4};
 vct3_t cubeRotation = { 0,0,0 };
 float fovFactor = 600;
@@ -57,19 +46,36 @@ void update(void) {
     cubeRotation.x += 0.001;
     cubeRotation.z += 0.001;
     
-
- /*   for (int i = 0; i < N_POINTS; i++)
+    //loop all triangle faces
+    for (int i = 0; i < N_MESH_FACES; i++)
     {
-        vct3_t point = cubePoints[i];
-        vct3_t transformedPoint = vec3RotoateY(point, cubeRotation.y);
-        transformedPoint = vec3RotoateZ(transformedPoint, cubeRotation.z);
-       // transformedPoint = vec3RotoateX(transformedPoint, cubeRotation.x);
-        // translate the points away from the camera
-        transformedPoint.z -= cameraPosition.z;
-        vct2_t projectedPoint = project(transformedPoint);
-        projectedPoints[i] = projectedPoint;
+        face_t meshFace = mesFaces[i];
+        vct3_t faceVertices[3];
+        faceVertices[0] = meshVertices[meshFace.a - 1];
+        faceVertices[1] = meshVertices[meshFace.b - 1];
+        faceVertices[2] = meshVertices[meshFace.c - 1];
+        // loop all three vertives and apply transfrmations
+        triange_t projectedTriangle;
+        for (int v = 0; v < 3; v++)
+        {
+            vct3_t transformedVertice = faceVertices[v];
+            transformedVertice = vec3RotoateY(transformedVertice, cubeRotation.y);
+            transformedVertice = vec3RotoateZ(transformedVertice, cubeRotation.z);
+            transformedVertice = vec3RotoateX(transformedVertice, cubeRotation.x);
+
+            // translate the points away from the camera
+            transformedVertice.z -= cameraPosition.z;
+            vct2_t projectedPoint = project(transformedVertice);
+            
+            // Scale and transate to middle of te screen
+            projectedPoint.x += (window_width / 2);
+            projectedPoint.y += (window_height / 2);
+            projectedTriangle.points[v] = projectedPoint;
+        }
+        triToRender[i] = projectedTriangle;
     }
-    */
+
+
 }
 
 void render(void)
@@ -77,16 +83,21 @@ void render(void)
     
 
     //drawGrid(50, 50, 0x0000FF00, GRID_DOTS);
-    /*for (int i = 0; i < N_POINTS; i++ )
+    for (int i = 0; i < N_MESH_FACES; i++)
     {
-        drawRect(
-            projectedPoints[i].x + (window_width/2), 
-            projectedPoints[i].y + (window_height/2),
-            4,
-            4, 
-            0xFFFFFF00);
-        
-    }*/
+        triange_t triangle = triToRender[i];
+        for (int j = 0; j < 3; j++)
+        {
+
+            drawRect(
+                triangle.points[j].x,
+                triangle.points[j].y,
+                4,
+                4,
+                0xFFFFFF00);
+        }
+    }
+ 
     renderColorBuffer();
     clearColorBuffer(0x00000000);
     SDL_RenderPresent(renderer);
