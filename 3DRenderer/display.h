@@ -37,5 +37,7 @@ bool initialize_window(void);
 void clearColorBuffer(uint32_t color);
 bool checkWindowBounds(uint16_t x, uint16_t y);
 void drawPixel(int x, int y, uint32_t color);
+void drawLine(int x, int y, int x1, int y1, uint32_t color);
+void drawTriangle(int x, int y, int x1, int y1, int x2, int y2, uint32_t color);
 
 #endif

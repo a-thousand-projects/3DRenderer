@@ -29,8 +29,8 @@ void setup(void) {
 vct2_t project(vct3_t point)
 {
     vct2_t projectedPoint = {
-        .x = (fovFactor * point.x)/point.z,
-        .y = (fovFactor * point.y)/point.z
+        .x = (fovFactor * point.x)/ (point.z),
+        .y = (fovFactor * point.y)/(point.z)
     };
     return projectedPoint;
 }
@@ -80,22 +80,29 @@ void update(void) {
 
 void render(void)
 {
-    
+    drawLine(500, 500, 100, 100, 0xFF00FF00);
 
     //drawGrid(50, 50, 0x0000FF00, GRID_DOTS);
     for (int i = 0; i < N_MESH_FACES; i++)
     {
         triange_t triangle = triToRender[i];
-        for (int j = 0; j < 3; j++)
-        {
+        drawTriangle(triangle.points[0].x, triangle.points[0].y,
+            triangle.points[1].x, triangle.points[1].y,
+            triangle.points[2].x, triangle.points[2].y, 0xFF00FF00);
 
+        drawRect(triangle.points[0].x, triangle.points[0].y, 3, 3, 0xFF00FF00);
+        drawRect(triangle.points[1].x, triangle.points[1].y, 3, 3, 0xFF00FF00);
+        drawRect(triangle.points[2].x, triangle.points[2].y, 3, 3, 0xFF00FF00);
+        
+       /* for (int j = 0; j < 3; j++) 
+        {
             drawRect(
                 triangle.points[j].x,
                 triangle.points[j].y,
                 4,
                 4,
                 0xFFFFFF00);
-        }
+        }*/
     }
  
     renderColorBuffer();

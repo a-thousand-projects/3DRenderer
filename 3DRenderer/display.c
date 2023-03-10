@@ -81,6 +81,36 @@ void drawGrid(uint8_t col, uint8_t row, uint32_t color, gridMode_t mode)
     }
 }
 
+void drawLine(int x, int y, int x1, int y1, uint32_t color)
+{
+    int deltaX = (x1 - x);
+    int deltaY = (y1 - y);
+
+    int sideLength = (abs(deltaX) > abs(deltaY)) ? abs(deltaX) : abs(deltaY);
+
+    // Calculate inc for X & Y
+    float incX = deltaX / (float)sideLength;
+    float incY = deltaY / (float)sideLength;
+
+    float currentX = x;
+    float currentY = y;
+
+    for (int i = 0; i < sideLength; i++)
+    {
+        drawPixel(round(currentX), round(currentY),color);
+        currentX += incX;
+        currentY += incY;
+    }
+
+}
+
+
+void drawTriangle(int x, int y, int x1, int y1, int x2, int y2, uint32_t color)
+{
+    drawLine(x, y, x1, y1, color);
+    drawLine(x1, y1, x2, y2, color);
+    drawLine(x2, y2, x, y, color);
+}
 
 void drawHLine(uint16_t x, uint16_t y, uint16_t length, uint32_t color)
 {
