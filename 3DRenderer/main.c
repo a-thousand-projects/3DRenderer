@@ -4,9 +4,10 @@
 #include "display.h"
 #include "vectors.h"
 #include "mesh.h"
+#include "array.h"
 
 
-triange_t triToRender[N_MESH_FACES];
+triange_t *triToRender = NULL;
 vct3_t cameraPosition = {0,0,-4};
 vct3_t cubeRotation = { 0,0,0 };
 float fovFactor = 600;
@@ -41,6 +42,7 @@ void update(void) {
 
     prevFrameTime = SDL_GetTicks();
 
+    triToRender = NULL;
 
     cubeRotation.y += 0.1;
     cubeRotation.x += 0.001;
@@ -72,7 +74,8 @@ void update(void) {
             projectedPoint.y += (window_height / 2);
             projectedTriangle.points[v] = projectedPoint;
         }
-        triToRender[i] = projectedTriangle;
+        array_push(triToRender, projectedTriangle);
+       // triToRender[i] = projectedTriangle;
     }
 
 
@@ -83,7 +86,8 @@ void render(void)
     drawLine(500, 500, 100, 100, 0xFF00FF00);
 
     //drawGrid(50, 50, 0x0000FF00, GRID_DOTS);
-    for (int i = 0; i < N_MESH_FACES; i++)
+    uint16_t triArrayLen = array_length(triToRender);
+    for (int i = 0; i < triArrayLen; i++)
     {
         triange_t triangle = triToRender[i];
         drawTriangle(triangle.points[0].x, triangle.points[0].y,
