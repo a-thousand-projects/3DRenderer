@@ -9,7 +9,7 @@
 
 triange_t *triToRender = NULL;
 vct3_t cameraPosition = {0,0,-4};
-vct3_t cubeRotation = { 0,0,0 };
+
 float fovFactor = 600;
 
 void setup(void) {
@@ -23,7 +23,7 @@ void setup(void) {
         SDL_TEXTUREACCESS_STREAMING,
         window_width, window_height);
     
-
+    loadCubeMeshData();
 }
 
 
@@ -44,26 +44,27 @@ void update(void) {
 
     triToRender = NULL;
 
-    cubeRotation.y += 0.1;
-    cubeRotation.x += 0.001;
-    cubeRotation.z += 0.001;
+    mesh.rotation.y += 0.1;
+    mesh.rotation.x += 0.001;
+    mesh.rotation.z += 0.001;
     
     //loop all triangle faces
-    for (int i = 0; i < N_MESH_FACES; i++)
+    int meshFaceSize = array_length(mesh.faces);
+    for (int i = 0; i < meshFaceSize; i++)
     {
-        face_t meshFace = mesFaces[i];
+        face_t meshFace = cubeFaces[i];
         vct3_t faceVertices[3];
-        faceVertices[0] = meshVertices[meshFace.a - 1];
-        faceVertices[1] = meshVertices[meshFace.b - 1];
-        faceVertices[2] = meshVertices[meshFace.c - 1];
+        faceVertices[0] = mesh.vertices[meshFace.a - 1];
+        faceVertices[1] = mesh.vertices[meshFace.b - 1];
+        faceVertices[2] = mesh.vertices[meshFace.c - 1];
         // loop all three vertives and apply transfrmations
         triange_t projectedTriangle;
         for (int v = 0; v < 3; v++)
         {
             vct3_t transformedVertice = faceVertices[v];
-            transformedVertice = vec3RotoateY(transformedVertice, cubeRotation.y);
-            transformedVertice = vec3RotoateZ(transformedVertice, cubeRotation.z);
-            transformedVertice = vec3RotoateX(transformedVertice, cubeRotation.x);
+            transformedVertice = vec3RotoateY(transformedVertice, mesh.rotation.y);
+            transformedVertice = vec3RotoateZ(transformedVertice, mesh.rotation.z);
+            transformedVertice = vec3RotoateX(transformedVertice, mesh.rotation.x);
 
             // translate the points away from the camera
             transformedVertice.z -= cameraPosition.z;
@@ -94,9 +95,9 @@ void render(void)
             triangle.points[1].x, triangle.points[1].y,
             triangle.points[2].x, triangle.points[2].y, 0xFF00FF00);
 
-        drawRect(triangle.points[0].x, triangle.points[0].y, 3, 3, 0xFF00FF00);
-        drawRect(triangle.points[1].x, triangle.points[1].y, 3, 3, 0xFF00FF00);
-        drawRect(triangle.points[2].x, triangle.points[2].y, 3, 3, 0xFF00FF00);
+        drawRect(triangle.points[0].x-5, triangle.points[0].y-5, 10, 10, 0xFF00FF00);
+        drawRect(triangle.points[1].x-5, triangle.points[1].y-5, 10, 10, 0xFF00FF00);
+        drawRect(triangle.points[2].x-5, triangle.points[2].y-5, 10, 10, 0xFF00FF00);
         
        /* for (int j = 0; j < 3; j++) 
         {
@@ -108,10 +109,17 @@ void render(void)
                 0xFFFFFF00);
         }*/
     }
- 
+    array_free(triToRender);
     renderColorBuffer();
     clearColorBuffer(0x00000000);
     SDL_RenderPresent(renderer);
+}
+
+void freeResouces(void)
+{
+    array_free(mesh.faces);
+    array_free(mesh.vertices);
+    free(colorBuffer);
 }
 
 int main()
@@ -128,6 +136,7 @@ int main()
     }
 
     destroyWindow();
+    freeResouces();
     return 0;
 }
 
