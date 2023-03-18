@@ -23,7 +23,8 @@ void setup(void) {
         SDL_TEXTUREACCESS_STREAMING,
         window_width, window_height);
     
-    loadCubeMeshData();
+    //loadCubeMeshData();
+    loadObjDatafromFile("assets/cube.obj");
 }
 
 

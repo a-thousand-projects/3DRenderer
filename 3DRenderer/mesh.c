@@ -53,3 +53,28 @@ void loadCubeMeshData(void)
     }
 
 }
+
+void readLine(FILE* filePtr, char *line)
+{
+    char s = 0;
+    while (s != '\n' || s== EOF)
+    {
+        s = fgetc(filePtr);
+        *(line++) = s;
+    }
+}
+
+void loadObjDatafromFile(char* filename)
+{
+    FILE* filePtr;
+    char string[50];
+    errno_t err = 0;
+    err = fopen_s(&filePtr,filename, "r");
+    if (!filePtr)
+    {
+        return;
+    }
+    readLine(filePtr, &string);
+    
+
+ }
