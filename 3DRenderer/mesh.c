@@ -1,6 +1,8 @@
 #include "mesh.h"
 #include "array.h"
 #include "stdio.h"
+#include "string.h"
+#include "stdlib.h"
 
 mesh_t mesh = {
     .vertices = NULL,
@@ -54,27 +56,52 @@ void loadCubeMeshData(void)
 
 }
 
-void readLine(FILE* filePtr, char *line)
+int readLine(FILE* filePtr, char *line)
 {
     char s = 0;
-    while (s != '\n' || s== EOF)
+    while (s != '\n' )
     {
         s = fgetc(filePtr);
         *(line++) = s;
+        if (feof(filePtr))
+        {
+            return -1;
+        }
     }
+    *(line) = 0x0; 
+    return 0;
 }
 
 void loadObjDatafromFile(char* filename)
 {
     FILE* filePtr;
-    char string[50];
+    char objString[50];
     errno_t err = 0;
-    err = fopen_s(&filePtr,filename, "r");
+    err = fopen_s(&filePtr, filename, "r");
+    vct3_t vector = {0,0,0};
+    char* tokenPtr = NULL;
+    char* next = NULL;
     if (!filePtr)
     {
         return;
     }
-    readLine(filePtr, &string);
-    
 
+
+    while (!readLine(filePtr, objString))
+    {
+        if (objString[0] == 'v')
+        {
+            /* Process a vector (v -1.000000 -1.000000 1.000000) */
+
+            /*tokenize string*/
+            tokenPtr = strtok_s(objString, " ",&next); /* Skip the first token = V*/
+            tokenPtr = strtok_s(NULL, " ",&next); 
+            vector.x = (float)atof(tokenPtr);
+            tokenPtr = strtok_s(NULL, " ",&next); /* Read the third Token = V*/
+            vector.x = (float)atof(tokenPtr);
+            tokenPtr = strtok_s(NULL, " ",&next); /* Read the third Token = V*/
+            vector.z = (float)atof(tokenPtr);
+            printf(tokenPtr);
+        }
+    }
  }
