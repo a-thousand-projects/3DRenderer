@@ -9,7 +9,7 @@ mesh_t mesh = {
     .faces = NULL,
     .rotation = {0,0,0}
 };
-
+/*
 vct3_t cubeVertices[N_CUBE_VERTICES] = {
     {.x = -1 ,.y = -1 ,.z = -1},
     {.x = -1 , .y = 1 , .z = -1},
@@ -55,30 +55,17 @@ void loadCubeMeshData(void)
     }
 
 }
+*/
 
-int readLine(FILE* filePtr, char *line)
-{
-    char s = 0;
-    while (s != '\n' )
-    {
-        s = fgetc(filePtr);
-        *(line++) = s;
-        if (feof(filePtr))
-        {
-            return -1;
-        }
-    }
-    *(line) = 0x0; 
-    return 0;
-}
 
 void loadObjDatafromFile(char* filename)
 {
     FILE* filePtr;
-    char objString[50];
+    char objString[1024];
     errno_t err = 0;
     err = fopen_s(&filePtr, filename, "r");
-    vct3_t vector = {0,0,0};
+    
+    face_t face;
     char* tokenPtr = NULL;
     char* next = NULL;
     if (!filePtr)
@@ -87,21 +74,46 @@ void loadObjDatafromFile(char* filename)
     }
 
 
-    while (!readLine(filePtr, objString))
+    while (fgets(objString, 1024, filePtr))
     {
-        if (objString[0] == 'v')
+        
+        if (!strncmp(objString,"v ",2))
         {
+            vct3_t vector = {0,0,0};
             /* Process a vector (v -1.000000 -1.000000 1.000000) */
-
+           // vector = (vct3_t*)malloc(sizeof(vct3_t));
             /*tokenize string*/
-            tokenPtr = strtok_s(objString, " ",&next); /* Skip the first token = V*/
+            sscanf_s(objString, "v %f %f %f", &vector.x, &vector.y, &vector.z);
+            /*tokenPtr = strtok_s(objString, " ", &next); // Skip the first token = V
             tokenPtr = strtok_s(NULL, " ",&next); 
             vector.x = (float)atof(tokenPtr);
-            tokenPtr = strtok_s(NULL, " ",&next); /* Read the third Token = V*/
-            vector.x = (float)atof(tokenPtr);
-            tokenPtr = strtok_s(NULL, " ",&next); /* Read the third Token = V*/
-            vector.z = (float)atof(tokenPtr);
-            printf(tokenPtr);
+            tokenPtr = strtok_s(NULL, " ",&next); // Read the third Token = V
+            vector.y = (float)atof(tokenPtr);
+            tokenPtr = strtok_s(NULL, " ",&next); // Read the third Token = V
+            vector.z = (float)atof(tokenPtr);*/
+            array_push(mesh.vertices, vector);
+            printf("V = %f,%f,%f\n\r", vector.x, vector.y, vector.z);
         }
-    }
+
+        if (!strncmp(objString, "f ", 2))
+        {
+            /* f 1/1/1 2/2/1 3/3/1 */
+            tokenPtr = strtok_s( objString, " ", & next); /* Skipp the f*/
+            tokenPtr = strtok_s(NULL, "/", &next); /* get the first value*/
+            face.a = (float)atof(tokenPtr);
+            tokenPtr = strtok_s(NULL, " ", &next); /* skipp the next two*/
+            tokenPtr = strtok_s(NULL, "/", &next); /* get the second value*/
+            face.b = (float)atof(tokenPtr);
+            tokenPtr = strtok_s(NULL, " ", &next); /* skipp the next two*/
+            tokenPtr = strtok_s(NULL, "/", &next); /* get the third value*/
+            face.c = (float)atof(tokenPtr);
+            array_push(mesh.faces, face);
+            printf("F = %i,%i,%i\n\r", face.a, face.b, face.c);
+        }
+
+
+    }  
+    printf("Vertice Count : %d\n\r", array_length(mesh.vertices));
+    printf("Face Count    : %d\n\r", array_length(mesh.faces));
+
  }

@@ -8,7 +8,7 @@
 
 
 triange_t *triToRender = NULL;
-vct3_t cameraPosition = {0,0,-4};
+vct3_t cameraPosition = {0,0,-3};
 
 float fovFactor = 600;
 
@@ -24,7 +24,8 @@ void setup(void) {
         window_width, window_height);
     
     //loadCubeMeshData();
-    loadObjDatafromFile("assets/cube.obj");
+    //loadObjDatafromFile("assets/cube.obj");
+    loadObjDatafromFile("assets/f22.obj");
 }
 
 
@@ -53,7 +54,7 @@ void update(void) {
     int meshFaceSize = array_length(mesh.faces);
     for (int i = 0; i < meshFaceSize; i++)
     {
-        face_t meshFace = cubeFaces[i];
+        face_t meshFace = mesh.faces[i];
         vct3_t faceVertices[3];
         faceVertices[0] = mesh.vertices[meshFace.a - 1];
         faceVertices[1] = mesh.vertices[meshFace.b - 1];
@@ -85,7 +86,7 @@ void update(void) {
 
 void render(void)
 {
-    drawLine(500, 500, 100, 100, 0xFF00FF00);
+   
 
     //drawGrid(50, 50, 0x0000FF00, GRID_DOTS);
     uint16_t triArrayLen = array_length(triToRender);
