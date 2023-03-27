@@ -65,7 +65,6 @@ void loadObjDatafromFile(char* filename)
     errno_t err = 0;
     err = fopen_s(&filePtr, filename, "r");
     
-    face_t face;
     char* tokenPtr = NULL;
     char* next = NULL;
     if (!filePtr)
@@ -81,16 +80,7 @@ void loadObjDatafromFile(char* filename)
         {
             vct3_t vector = {0,0,0};
             /* Process a vector (v -1.000000 -1.000000 1.000000) */
-           // vector = (vct3_t*)malloc(sizeof(vct3_t));
-            /*tokenize string*/
             sscanf_s(objString, "v %f %f %f", &vector.x, &vector.y, &vector.z);
-            /*tokenPtr = strtok_s(objString, " ", &next); // Skip the first token = V
-            tokenPtr = strtok_s(NULL, " ",&next); 
-            vector.x = (float)atof(tokenPtr);
-            tokenPtr = strtok_s(NULL, " ",&next); // Read the third Token = V
-            vector.y = (float)atof(tokenPtr);
-            tokenPtr = strtok_s(NULL, " ",&next); // Read the third Token = V
-            vector.z = (float)atof(tokenPtr);*/
             array_push(mesh.vertices, vector);
             printf("V = %f,%f,%f\n\r", vector.x, vector.y, vector.z);
         }
@@ -98,15 +88,15 @@ void loadObjDatafromFile(char* filename)
         if (!strncmp(objString, "f ", 2))
         {
             /* f 1/1/1 2/2/1 3/3/1 */
-            tokenPtr = strtok_s( objString, " ", & next); /* Skipp the f*/
-            tokenPtr = strtok_s(NULL, "/", &next); /* get the first value*/
-            face.a = (float)atof(tokenPtr);
-            tokenPtr = strtok_s(NULL, " ", &next); /* skipp the next two*/
-            tokenPtr = strtok_s(NULL, "/", &next); /* get the second value*/
-            face.b = (float)atof(tokenPtr);
-            tokenPtr = strtok_s(NULL, " ", &next); /* skipp the next two*/
-            tokenPtr = strtok_s(NULL, "/", &next); /* get the third value*/
-            face.c = (float)atof(tokenPtr);
+            face_t face = { 0,0,0 };
+            int texture[3] = { 0,0,0 };
+            int normal[3] = { 0,0,0 };
+            sscanf_s(&objString,
+                "f %d/%d/%d %d/%d/%d %d/%d/%d",
+                &face.a, &texture[0], &normal[0],
+                &face.b, &texture[1], &normal[1],
+                &face.c, &texture[2], &normal[2]);
+            
             array_push(mesh.faces, face);
             printf("F = %i,%i,%i\n\r", face.a, face.b, face.c);
         }

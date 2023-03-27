@@ -10,7 +10,7 @@
 triange_t *triToRender = NULL;
 vct3_t cameraPosition = {0,0,-3};
 
-float fovFactor = 600;
+float fovFactor = 1000;
 
 void setup(void) {
 
@@ -26,10 +26,12 @@ void setup(void) {
     //loadCubeMeshData();
     //loadObjDatafromFile("assets/cube.obj");
     loadObjDatafromFile("assets/f22.obj");
+    //loadObjDatafromFile("assets/pi.obj");
+
 }
 
 
-vct2_t project(vct3_t point)
+vct2_t project(vct3_t point)    
 {
     vct2_t projectedPoint = {
         .x = (fovFactor * point.x)/ (point.z),
@@ -46,9 +48,9 @@ void update(void) {
 
     triToRender = NULL;
 
-    mesh.rotation.y += 0.1;
-    mesh.rotation.x += 0.001;
-    mesh.rotation.z += 0.001;
+    mesh.rotation.y += 0.00;
+    mesh.rotation.x += 0.01;
+    mesh.rotation.z += 0.0;
     
     //loop all triangle faces
     int meshFaceSize = array_length(mesh.faces);
@@ -97,9 +99,9 @@ void render(void)
             triangle.points[1].x, triangle.points[1].y,
             triangle.points[2].x, triangle.points[2].y, 0xFF00FF00);
 
-        drawRect(triangle.points[0].x-5, triangle.points[0].y-5, 10, 10, 0xFF00FF00);
-        drawRect(triangle.points[1].x-5, triangle.points[1].y-5, 10, 10, 0xFF00FF00);
-        drawRect(triangle.points[2].x-5, triangle.points[2].y-5, 10, 10, 0xFF00FF00);
+        drawRect(triangle.points[0].x-3, triangle.points[0].y-3, 5, 5, 0xFF00FF00);
+        drawRect(triangle.points[1].x-3, triangle.points[1].y-3, 5, 5, 0xFF00FF00);
+        drawRect(triangle.points[2].x-3, triangle.points[2].y-3, 5, 5, 0xFF00FF00);
         
        /* for (int j = 0; j < 3; j++) 
         {
@@ -111,6 +113,7 @@ void render(void)
                 0xFFFFFF00);
         }*/
     }
+
     array_free(triToRender);
     renderColorBuffer();
     clearColorBuffer(0x00000000);
