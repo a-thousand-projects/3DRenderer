@@ -75,8 +75,8 @@ vct3_t vct3Subtract(vct3_t a, vct3_t b)
 {
 	vct3_t r;
 	r.x = a.x - b.x;
-	r.x = a.y - b.y;
-	r.x = a.z - b.z;
+	r.y = a.y - b.y;
+	r.z = a.z - b.z;
 	return r;
 }
 
@@ -122,9 +122,9 @@ vct3_t vct3Div(vct3_t a, float factor)
 vct3_t vct3Cross(vct3_t a, vct3_t b)
 {
 	vct3_t result = {
-		a.y * b.z - b.y * a.z,
-		a.z * b.x - b.z * a.x,
-		a.x * b.y - b.x * a.y
+		a.y * b.z - a.z * b.y,
+		a.z * b.x - a.x * b.z,
+		a.x * b.y - a.y * b.x
 	};
 	return result;
 }

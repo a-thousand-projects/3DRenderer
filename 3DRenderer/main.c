@@ -8,7 +8,7 @@
 
 
 triange_t *triToRender = NULL;
-vct3_t cameraPosition = {0,0,-3};
+vct3_t cameraPosition = {0,0,0};
 
 float fovFactor = 1000;
 
@@ -25,8 +25,8 @@ void setup(void) {
     
     //loadCubeMeshData();
     //loadObjDatafromFile("assets/cube.obj");
-    loadObjDatafromFile("assets/f22.obj");
-    //loadObjDatafromFile("assets/pi.obj");
+    //loadObjDatafromFile("assets/f22.obj");
+    loadObjDatafromFile("assets/pi.obj");
 
 }
 
@@ -63,6 +63,7 @@ void update(void) {
         faceVertices[2] = mesh.vertices[meshFace.c - 1];
         // loop all three vertives and apply transfrmations
         triange_t projectedTriangle;
+        vct3_t transformedVertices[3]; 
         for (int v = 0; v < 3; v++)
         {
             vct3_t transformedVertice = faceVertices[v];
@@ -71,10 +72,28 @@ void update(void) {
             transformedVertice = vec3RotoateX(transformedVertice, mesh.rotation.x);
 
             // translate the points away from the camera
-            transformedVertice.z -= cameraPosition.z;
-            vct2_t projectedPoint = project(transformedVertice);
-            
+            transformedVertice.z += 3; // cameraPosition.z;
+            transformedVertices[v] = transformedVertice;
+        }
+
+        // Do backface culling check
+        vct3_t vectorA = transformedVertices[0]; /*   A    */
+        vct3_t vectorB = transformedVertices[1]; /*  / \   */
+        vct3_t vectorC = transformedVertices[2]; /* B---C  */ 
+
+        vct3_t vectorAB = vct3Subtract(vectorB, vectorA);
+        vct3_t vectorAC = vct3Subtract(vectorC, vectorA);
+        // Computer the Face Normal using the cross product
+        vct3_t vectorNormal = vct3Cross(vectorAB, vectorAC); //This order cos we are using left handed system
+        // Find vector between camera and face
+        vct3_t cameraRay = vct3Subtract( cameraPosition,vectorA);
+        // Calc hpw aligned the ray and face normal is
+        float cull = vct3Dot (vectorNormal,cameraRay);
+        if (cull < 0) continue;
+        for (int v = 0; v < 3; v++)
+        {
             // Scale and transate to middle of te screen
+            vct2_t projectedPoint = project(transformedVertices[v]);
             projectedPoint.x += (window_width / 2);
             projectedPoint.y += (window_height / 2);
             projectedTriangle.points[v] = projectedPoint;
