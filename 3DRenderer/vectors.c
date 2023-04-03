@@ -71,6 +71,13 @@ vct2_t vct2Subtract(vct2_t a, vct2_t b)
 	return r;
 }
 
+void vct2Nomialiase(vct2_t* a)
+{
+	float length = sqrt(a->x * a->x + a->y * a->y);
+	a->x /= length;
+	a->y /= length;
+}
+
 vct3_t vct3Subtract(vct3_t a, vct3_t b)
 {
 	vct3_t r;
@@ -132,4 +139,14 @@ vct3_t vct3Cross(vct3_t a, vct3_t b)
 float vct3Dot(vct3_t a, vct3_t b)
 {
 	return (a.x* b.x) + (a.y * b.y) + (a.z * b.z);
+}
+
+
+
+void vct3Nomialiase(vct3_t* a)
+{
+	float length = sqrt(a->x * a->x + a->y * a->y + a->z * a->z);
+	a->x /= length;
+	a->y /= length;
+	a->z /= length;
 }

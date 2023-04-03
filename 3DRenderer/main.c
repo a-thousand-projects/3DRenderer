@@ -24,9 +24,9 @@ void setup(void) {
         window_width, window_height);
     
     //loadCubeMeshData();
-    //loadObjDatafromFile("assets/cube.obj");
+    loadObjDatafromFile("assets/cube.obj");
     //loadObjDatafromFile("assets/f22.obj");
-    loadObjDatafromFile("assets/pi.obj");
+    //loadObjDatafromFile("assets/pi.obj");
 
 }
 
@@ -48,9 +48,9 @@ void update(void) {
 
     triToRender = NULL;
 
-    mesh.rotation.y += 0.00;
+    mesh.rotation.y += 0.01;
     mesh.rotation.x += 0.01;
-    mesh.rotation.z += 0.0;
+    mesh.rotation.z += 0.01;
     
     //loop all triangle faces
     int meshFaceSize = array_length(mesh.faces);
@@ -83,8 +83,16 @@ void update(void) {
 
         vct3_t vectorAB = vct3Subtract(vectorB, vectorA);
         vct3_t vectorAC = vct3Subtract(vectorC, vectorA);
+        vct3Nomialiase(&vectorAB);
+        vct3Nomialiase(&vectorAC);
+
         // Computer the Face Normal using the cross product
         vct3_t vectorNormal = vct3Cross(vectorAB, vectorAC); //This order cos we are using left handed system
+
+        // Normalise the Normal
+
+        vct3Nomialiase(&vectorNormal);
+
         // Find vector between camera and face
         vct3_t cameraRay = vct3Subtract( cameraPosition,vectorA);
         // Calc hpw aligned the ray and face normal is
