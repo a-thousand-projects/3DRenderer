@@ -105,6 +105,7 @@ void drawLine(int x, int y, int x1, int y1, uint32_t color)
 }
 
 
+
 void drawTriangle(int x, int y, int x1, int y1, int x2, int y2, uint32_t color)
 {
     drawLine(x, y, x1, y1, color);

@@ -119,27 +119,17 @@ void render(void)
 
     //drawGrid(50, 50, 0x0000FF00, GRID_DOTS);
     uint16_t triArrayLen = array_length(triToRender);
-    for (int i = 0; i < triArrayLen; i++)
+   /* for (int i = 0; i < triArrayLen; i++)
     {
         triange_t triangle = triToRender[i];
         drawTriangle(triangle.points[0].x, triangle.points[0].y,
             triangle.points[1].x, triangle.points[1].y,
             triangle.points[2].x, triangle.points[2].y, 0xFF00FF00);
-
-        drawRect(triangle.points[0].x-3, triangle.points[0].y-3, 5, 5, 0xFF00FF00);
-        drawRect(triangle.points[1].x-3, triangle.points[1].y-3, 5, 5, 0xFF00FF00);
-        drawRect(triangle.points[2].x-3, triangle.points[2].y-3, 5, 5, 0xFF00FF00);
-        
-       /* for (int j = 0; j < 3; j++) 
-        {
-            drawRect(
-                triangle.points[j].x,
-                triangle.points[j].y,
-                4,
-                4,
-                0xFFFFFF00);
-        }*/
     }
+    */
+
+
+    drawFilledTriangle(500,500, 900,800, 700,1000,0x00FF0000);
 
     array_free(triToRender);
     renderColorBuffer();
