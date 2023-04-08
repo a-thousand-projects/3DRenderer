@@ -127,9 +127,10 @@ void render(void)
             triangle.points[2].x, triangle.points[2].y, 0xFF00FF00);
     }
     */
+     
 
-
-    drawFilledTriangle(500,500, 900,800, 700,1000,0x00FF0000);
+    drawFilledTriangle(500,500, 900,800, 700,1000,0x0012A600);
+    drawTriangle(500, 500, 900, 800, 700, 1000, 0x00FF0000);
 
     array_free(triToRender);
     renderColorBuffer();
