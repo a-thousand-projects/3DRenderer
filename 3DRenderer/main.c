@@ -24,8 +24,8 @@ void setup(void) {
         window_width, window_height);
     
     //loadCubeMeshData();
-    loadObjDatafromFile("assets/cube.obj");
-    //loadObjDatafromFile("assets/f22.obj");
+    //loadObjDatafromFile("assets/cube.obj");
+    loadObjDatafromFile("assets/f22.obj");
     //loadObjDatafromFile("assets/pi.obj");
 
 }
@@ -119,18 +119,22 @@ void render(void)
 
     //drawGrid(50, 50, 0x0000FF00, GRID_DOTS);
     uint16_t triArrayLen = array_length(triToRender);
-   /* for (int i = 0; i < triArrayLen; i++)
+   for (int i = 0; i < triArrayLen; i++)
     {
         triange_t triangle = triToRender[i];
+       
+        drawFilledTriangle(triangle.points[0].x, triangle.points[0].y,
+            triangle.points[1].x, triangle.points[1].y,
+            triangle.points[2].x, triangle.points[2].y, 0xFFFF0000);
         drawTriangle(triangle.points[0].x, triangle.points[0].y,
             triangle.points[1].x, triangle.points[1].y,
-            triangle.points[2].x, triangle.points[2].y, 0xFF00FF00);
+            triangle.points[2].x, triangle.points[2].y, 0x99000000);
     }
-    */
+    
      
 
-    drawFilledTriangle(500,500, 900,800, 700,1000,0x0012A600);
-    drawTriangle(500, 500, 900, 800, 700, 1000, 0x00FF0000);
+    //drawFilledTriangle(500,500, 900,800, 700,1000,0x0012A600);
+    //drawTriangle(500, 500, 900, 800, 700, 1000, 0x00FF0000);
 
     array_free(triToRender);
     renderColorBuffer();

@@ -113,9 +113,19 @@ void drawTriangle(int x, int y, int x1, int y1, int x2, int y2, uint32_t color)
     drawLine(x2, y2, x, y, color);
 }
 
-void drawHLine(uint16_t x, uint16_t y, uint16_t length, uint32_t color)
+void drawHorzLine(int x, int y, int length, uint32_t color)
 {
-    for (int xd = x; xd < length + x; xd++)
+    int xStart;
+    if (length >= 0)
+    {
+        xStart = x;
+    }
+    else
+    {
+        xStart = x - abs(length);
+    }
+
+    for (int xd = xStart; xd < abs(length) + xStart; xd++)
     {
         drawPixel(xd, y, color);
         colorBuffer[(window_width * y) + xd] = color;
@@ -179,10 +189,4 @@ bool checkWindowBounds(uint16_t x, uint16_t y)
     return (x > 0 && x < window_width && y>0 && y < window_height);
 }
 
-//void drawPixel(uint16_t x, uint16_t y, uint32_t color)
-//{
-//    if  (checkWindowBounds(x, y))
-//    {
-//        colorBuffer[(window_width * y) + x] = color;
-//    }
-//}
+
