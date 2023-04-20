@@ -15,6 +15,14 @@ typedef enum
     GRID_DOTS
 }gridMode_t;
 
+typedef enum
+{
+    RenderWireAndDot = 1,
+    RenderWireOnly,
+    RenderFilledOnly,
+    RenderFilledAndWire
+}displayWireFrameMode_t;
+
 extern int window_height;
 extern int window_width;
 extern SDL_Window* window;
@@ -23,6 +31,8 @@ extern SDL_Texture* colorBufferTexture;
 extern uint32_t* colorBuffer;
 extern bool is_running;
 extern uint32_t prevFrameTime;
+extern displayWireFrameMode_t displayWireFrameMode;
+extern bool enableFaceCulling;
 
 
 

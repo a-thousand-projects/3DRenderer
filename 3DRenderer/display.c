@@ -12,6 +12,11 @@ uint32_t* colorBuffer = NULL;
 bool is_running = false;
 uint32_t prevFrameTime=0;
 
+displayWireFrameMode_t displayWireFrameMode;
+bool enableFaceCulling  ;
+
+
+
 bool initialize_window(void)
 {
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
@@ -169,7 +174,40 @@ void process_input(void)
     case SDL_KEYDOWN:
         if (event.key.keysym.sym == SDLK_ESCAPE)
             is_running = false;
+
+        if (event.key.keysym.sym == SDLK_1)
+        {
+            displayWireFrameMode = RenderWireOnly;
+
+        }
+        else if (event.key.keysym.sym == SDLK_2)
+        {
+            displayWireFrameMode = RenderWireAndDot;
+
+        }else if (event.key.keysym.sym == SDLK_3)
+        {
+            displayWireFrameMode = RenderFilledOnly;
+
+        }
+        else if (event.key.keysym.sym == SDLK_4)
+        {
+            displayWireFrameMode = RenderFilledAndWire;
+
+        }
+        else if (event.key.keysym.sym == SDLK_c)
+        {
+            enableFaceCulling = true;
+        }
+        else if (event.key.keysym.sym == SDLK_d)
+        {
+            enableFaceCulling = false;
+        }
+        
+
+
+        
         break;
+
     }
 }
 

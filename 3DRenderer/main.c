@@ -14,6 +14,9 @@ float fovFactor = 1000;
 
 void setup(void) {
 
+    displayWireFrameMode = RenderWireOnly;
+    enableFaceCulling = true;
+
     colorBuffer = (uint32_t*)malloc(sizeof(uint32_t) * window_width * window_height);
 
     uint32_t sz = sizeof(colorBuffer);
@@ -23,9 +26,9 @@ void setup(void) {
         SDL_TEXTUREACCESS_STREAMING,
         window_width, window_height);
     
-    //loadCubeMeshData();
+    loadCubeMeshData();
     //loadObjDatafromFile("assets/cube.obj");
-    loadObjDatafromFile("assets/f22.obj");
+    //loadObjDatafromFile("assets/f22.obj");
     //loadObjDatafromFile("assets/pi.obj");
 
 }
@@ -62,7 +65,7 @@ void update(void) {
         faceVertices[1] = mesh.vertices[meshFace.b - 1];
         faceVertices[2] = mesh.vertices[meshFace.c - 1];
         // loop all three vertives and apply transfrmations
-        triange_t projectedTriangle;
+        
         vct3_t transformedVertices[3]; 
         for (int v = 0; v < 3; v++)
         {
@@ -97,15 +100,30 @@ void update(void) {
         vct3_t cameraRay = vct3Subtract( cameraPosition,vectorA);
         // Calc hpw aligned the ray and face normal is
         float cull = vct3Dot (vectorNormal,cameraRay);
-        if (cull < 0) continue;
+        if (cull < 0 && enableFaceCulling) continue;
+
+        
+        vct2_t projectedPoints[3];
+
         for (int v = 0; v < 3; v++)
         {
             // Scale and transate to middle of te screen
-            vct2_t projectedPoint = project(transformedVertices[v]);
-            projectedPoint.x += (window_width / 2);
-            projectedPoint.y += (window_height / 2);
-            projectedTriangle.points[v] = projectedPoint;
+            projectedPoints[v] = project(transformedVertices[v]);
+            projectedPoints[v].x += (window_width / 2);
+            projectedPoints[v].y += (window_height / 2);
         }
+
+
+        triange_t projectedTriangle = {
+
+            {
+                projectedPoints[0].x, projectedPoints[0].y,
+                projectedPoints[1].x, projectedPoints[1].y,
+                projectedPoints[2].x, projectedPoints[2].y,
+            },
+            meshFace.color
+        };
+
         array_push(triToRender, projectedTriangle);
        // triToRender[i] = projectedTriangle;
     }
@@ -119,22 +137,33 @@ void render(void)
 
     //drawGrid(50, 50, 0x0000FF00, GRID_DOTS);
     uint16_t triArrayLen = array_length(triToRender);
+    int dotSize = 20 / 2;
    for (int i = 0; i < triArrayLen; i++)
     {
         triange_t triangle = triToRender[i];
+        if (displayWireFrameMode == RenderWireAndDot)
+        {
+            drawRect(triangle.points[0].x - dotSize, triangle.points[0].y - dotSize, dotSize, dotSize, 0xFF0000);
+            drawRect(triangle.points[1].x - dotSize, triangle.points[1].y - dotSize, dotSize, dotSize, 0xFF0000);
+            drawRect(triangle.points[2].x - dotSize, triangle.points[2].y - dotSize, dotSize, dotSize, 0xFF0000);
+        } 
+        if (displayWireFrameMode == RenderFilledOnly || displayWireFrameMode == RenderFilledAndWire)
+        {
+            drawFilledTriangle(triangle.points[0].x, triangle.points[0].y,
+                triangle.points[1].x, triangle.points[1].y,
+                triangle.points[2].x, triangle.points[2].y, 
+                triangle.color);
+        }
        
-        drawFilledTriangle(triangle.points[0].x, triangle.points[0].y,
-            triangle.points[1].x, triangle.points[1].y,
-            triangle.points[2].x, triangle.points[2].y, 0xFFFF0000);
-        drawTriangle(triangle.points[0].x, triangle.points[0].y,
-            triangle.points[1].x, triangle.points[1].y,
-            triangle.points[2].x, triangle.points[2].y, 0x99000000);
+        if (displayWireFrameMode == RenderWireOnly || displayWireFrameMode == RenderFilledAndWire || displayWireFrameMode == RenderWireAndDot)
+        {
+            drawTriangle(triangle.points[0].x, triangle.points[0].y,
+                triangle.points[1].x, triangle.points[1].y,
+                triangle.points[2].x, triangle.points[2].y, 0xffff00);
+        }
     }
     
-     
-
-    //drawFilledTriangle(500,500, 900,800, 700,1000,0x0012A600);
-    //drawTriangle(500, 500, 900, 800, 700, 1000, 0x00FF0000);
+    
 
     array_free(triToRender);
     renderColorBuffer();
