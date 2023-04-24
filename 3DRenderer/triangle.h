@@ -14,6 +14,7 @@ typedef struct {
 typedef struct {
 	vct2_t points[3];
 	uint32_t color;
+	float aveFaceDepth;
 }triange_t;
 
 void drawFilledTriangle(int x, int y, int x1, int y1, int x2, int y2, uint32_t color);

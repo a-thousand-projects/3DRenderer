@@ -104,15 +104,18 @@ void update(void) {
 
         
         vct2_t projectedPoints[3];
-
+        float aveDepth = 0;
         for (int v = 0; v < 3; v++)
         {
             // Scale and transate to middle of te screen
             projectedPoints[v] = project(transformedVertices[v]);
             projectedPoints[v].x += (window_width / 2);
             projectedPoints[v].y += (window_height / 2);
+            aveDepth += transformedVertices[v].z;
         }
 
+        // Calc the Average face depth after transformation
+        aveDepth /= 3;
 
         triange_t projectedTriangle = {
 
@@ -121,13 +124,36 @@ void update(void) {
                 projectedPoints[1].x, projectedPoints[1].y,
                 projectedPoints[2].x, projectedPoints[2].y,
             },
-            meshFace.color
+            meshFace.color,
+            aveDepth
         };
 
         array_push(triToRender, projectedTriangle);
        // triToRender[i] = projectedTriangle;
     }
+    /* sort triangles to render by ave depth*/
 
+    /* Simple Buble Sort*/
+    int sortDone = false;
+    triange_t tmp;
+    uint16_t triangleCount = array_length(triToRender);
+    while (!sortDone)
+    {
+        
+        sortDone = true;
+        for (int t = 0; t < triangleCount - 1;t++)
+        {
+            triange_t triFirst = triToRender[t];
+            triange_t triSecond = triToRender[t+1];
+            if (triFirst.aveFaceDepth < triSecond.aveFaceDepth)
+            {
+                tmp = triToRender[t+1];
+                triToRender[t + 1] = triToRender[t];
+                triToRender[t] = tmp;
+                sortDone = false;
+            }
+        }
+    }
 
 }
 
