@@ -5,6 +5,7 @@
 #include "vectors.h"
 #include "mesh.h"
 #include "array.h"
+#include "matrix.h"
 
 
 triange_t *triToRender = NULL;
@@ -54,6 +55,10 @@ void update(void) {
     mesh.rotation.y += 0.01;
     mesh.rotation.x += 0.01;
     mesh.rotation.z += 0.01;
+
+    mesh.scale.x = 0.002;
+    // Create a scale matrix 
+    mat4_t scaleMatrix = matMakeScale(mesh.scale.x, mesh.scale.y, mesh.scale.z);
     
     //loop all triangle faces
     int meshFaceSize = array_length(mesh.faces);
@@ -61,11 +66,10 @@ void update(void) {
     {
         face_t meshFace = mesh.faces[i];
         vct3_t faceVertices[3];
-        faceVertices[0] = mesh.vertices[meshFace.a - 1];
-        faceVertices[1] = mesh.vertices[meshFace.b - 1];
-        faceVertices[2] = mesh.vertices[meshFace.c - 1];
-        // loop all three vertives and apply transfrmations
         
+        // Multiply the face my the scale matrix
+        
+        // loop all three vertives and apply transfrmation
         vct3_t transformedVertices[3]; 
         for (int v = 0; v < 3; v++)
         {
