@@ -67,8 +67,16 @@ void update(void) {
     mesh.scale.x += 0.002;
     mesh.scale.y += 0.001;
     mesh.scale.z += 0.0;
-    // Create a scale matrix 
+
+    mesh.translation.x += 0.01;
+    mesh.translation.z = 20.0;
+
+    // Create a scale, rotate and translate matrix 
     mat4_t scaleMatrix = matMakeScale(mesh.scale.x, mesh.scale.y, mesh.scale.z);
+    mat4_t translateMatrix = matMakeTranslate(mesh.translation.x, mesh.translation.y, mesh.translation.z);
+    mat4_t rotateMatrixX = matMakeRotateX(mesh.rotation.x);
+    mat4_t rotateMatrixY = matMakeRotateY(mesh.rotation.y);
+    mat4_t rotateMatrixZ = matMakeRotateZ(mesh.rotation.z);
     
     //loop all triangle faces
     int meshFaceSize = array_length(mesh.faces);
@@ -87,8 +95,16 @@ void update(void) {
         {       
             // Multiply the face my the scale matrix
             vct4_t transformedVertice = vec3ToVec4(faceVertices[v]);
+
             transformedVertice = mat4MulVec4(scaleMatrix, transformedVertice);
-            transformedVertice.z += 5; // cameraPosition.z;
+           
+            transformedVertice = mat4MulVec4(rotateMatrixX, transformedVertice);
+            transformedVertice = mat4MulVec4(rotateMatrixY, transformedVertice);
+            transformedVertice = mat4MulVec4(rotateMatrixZ, transformedVertice);
+
+            transformedVertice = mat4MulVec4(translateMatrix, transformedVertice);
+ 
+           
             transformedVertices[v] = transformedVertice;
             // translate the points away from the camera
             
