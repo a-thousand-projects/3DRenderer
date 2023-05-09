@@ -141,12 +141,26 @@ float vct3Dot(vct3_t a, vct3_t b)
 	return (a.x* b.x) + (a.y * b.y) + (a.z * b.z);
 }
 
-
-
 void vct3Nomialiase(vct3_t* a)
 {
 	float length = sqrt(a->x * a->x + a->y * a->y + a->z * a->z);
 	a->x /= length;
 	a->y /= length;
 	a->z /= length;
+}
+
+vct4_t vec3ToVec4(vct3_t v)
+{
+	vct4_t result = {0,0,0,0};
+	result.x = v.x;
+	result.y = v.y;
+	result.z = v.z;
+	result.w = 1.0;
+	return result;
+}
+
+vct3_t vec4ToVec3(vct4_t v)
+{
+	vct3_t result = { v.x,v.y,v.z };
+	return result;
 }

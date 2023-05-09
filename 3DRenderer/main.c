@@ -13,6 +13,8 @@ vct3_t cameraPosition = {0,0,0};
 
 float fovFactor = 1000;
 
+int previous_frame_time = 0;
+
 void setup(void) {
 
     displayWireFrameMode = RenderWireOnly;
@@ -46,7 +48,13 @@ vct2_t project(vct3_t point)
 
 void update(void) {
 
-    while (!SDL_TICKS_PASSED(SDL_GetTicks(), prevFrameTime+FRAME_TARGET_TIME));
+    // Wait some time until the reach the target frame time in milliseconds
+    int time_to_wait = FRAME_TARGET_TIME - (SDL_GetTicks() - previous_frame_time);
+
+    // Only delay execution if we are running too fast
+    if (time_to_wait > 0 && time_to_wait <= FRAME_TARGET_TIME) {
+        SDL_Delay(time_to_wait);
+    }
 
     prevFrameTime = SDL_GetTicks();
 
@@ -55,8 +63,10 @@ void update(void) {
     mesh.rotation.y += 0.01;
     mesh.rotation.x += 0.01;
     mesh.rotation.z += 0.01;
-
-    mesh.scale.x = 0.002;
+    
+    mesh.scale.x += 0.002;
+    mesh.scale.y += 0.001;
+    mesh.scale.z += 0.0;
     // Create a scale matrix 
     mat4_t scaleMatrix = matMakeScale(mesh.scale.x, mesh.scale.y, mesh.scale.z);
     
@@ -65,28 +75,29 @@ void update(void) {
     for (int i = 0; i < meshFaceSize; i++)
     {
         face_t meshFace = mesh.faces[i];
-        vct3_t faceVertices[3];
-        
-        // Multiply the face my the scale matrix
-        
-        // loop all three vertives and apply transfrmation
-        vct3_t transformedVertices[3]; 
-        for (int v = 0; v < 3; v++)
-        {
-            vct3_t transformedVertice = faceVertices[v];
-            transformedVertice = vec3RotoateY(transformedVertice, mesh.rotation.y);
-            transformedVertice = vec3RotoateZ(transformedVertice, mesh.rotation.z);
-            transformedVertice = vec3RotoateX(transformedVertice, mesh.rotation.x);
+        vct3_t faceVertices[3] = {0,0,0};
 
-            // translate the points away from the camera
-            transformedVertice.z += 3; // cameraPosition.z;
+        faceVertices[0] = mesh.vertices[meshFace.a - 1];
+        faceVertices[1] = mesh.vertices[meshFace.b - 1];
+        faceVertices[2] = mesh.vertices[meshFace.c - 1];
+        vct4_t transformedVertices[3];
+
+        // loop all three vertives and apply transfrmation
+        for (int v = 0; v < 3; v++)
+        {       
+            // Multiply the face my the scale matrix
+            vct4_t transformedVertice = vec3ToVec4(faceVertices[v]);
+            transformedVertice = mat4MulVec4(scaleMatrix, transformedVertice);
+            transformedVertice.z += 5; // cameraPosition.z;
             transformedVertices[v] = transformedVertice;
+            // translate the points away from the camera
+            
         }
 
         // Do backface culling check
-        vct3_t vectorA = transformedVertices[0]; /*   A    */
-        vct3_t vectorB = transformedVertices[1]; /*  / \   */
-        vct3_t vectorC = transformedVertices[2]; /* B---C  */ 
+        vct3_t vectorA = vec4ToVec3(transformedVertices[0]); /*   A    */
+        vct3_t vectorB = vec4ToVec3(transformedVertices[1]); /*  / \   */
+        vct3_t vectorC = vec4ToVec3(transformedVertices[2]); /* B---C  */
 
         vct3_t vectorAB = vct3Subtract(vectorB, vectorA);
         vct3_t vectorAC = vct3Subtract(vectorC, vectorA);
@@ -112,7 +123,7 @@ void update(void) {
         for (int v = 0; v < 3; v++)
         {
             // Scale and transate to middle of te screen
-            projectedPoints[v] = project(transformedVertices[v]);
+            projectedPoints[v] = project(vec4ToVec3(transformedVertices[v]));
             projectedPoints[v].x += (window_width / 2);
             projectedPoints[v].y += (window_height / 2);
             aveDepth += transformedVertices[v].z;
@@ -165,7 +176,7 @@ void render(void)
 {
    
 
-    //drawGrid(50, 50, 0x0000FF00, GRID_DOTS);
+    drawGrid(50, 50, 0x0000FF00, GRID_DOTS);
     uint16_t triArrayLen = array_length(triToRender);
     int dotSize = 20 / 2;
    for (int i = 0; i < triArrayLen; i++)
