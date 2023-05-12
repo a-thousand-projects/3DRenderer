@@ -60,16 +60,16 @@ void update(void) {
 
     triToRender = NULL;
 
-    mesh.rotation.y += 0.01;
-    mesh.rotation.x += 0.01;
-    mesh.rotation.z += 0.01;
+    mesh.rotation.y += 0.1;
+    mesh.rotation.x += 0.1;
+    mesh.rotation.z += 0.1;
     
-    mesh.scale.x += 0.002;
-    mesh.scale.y += 0.001;
+    mesh.scale.x += 0.02;
+    mesh.scale.y += 0.01;
     mesh.scale.z += 0.0;
 
     mesh.translation.x += 0.01;
-    mesh.translation.z = 20.0;
+    mesh.translation.z = 5.0;
 
     // Create a scale, rotate and translate matrix 
     mat4_t scaleMatrix = matMakeScale(mesh.scale.x, mesh.scale.y, mesh.scale.z);
@@ -93,18 +93,19 @@ void update(void) {
         // loop all three vertives and apply transfrmation
         for (int v = 0; v < 3; v++)
         {       
-            // Multiply the face my the scale matrix
+            
             vct4_t transformedVertice = vec3ToVec4(faceVertices[v]);
+            // Create a wold Matrix for Scale, Rotation and transformation
 
-            transformedVertice = mat4MulVec4(scaleMatrix, transformedVertice);
-           
-            transformedVertice = mat4MulVec4(rotateMatrixX, transformedVertice);
-            transformedVertice = mat4MulVec4(rotateMatrixY, transformedVertice);
-            transformedVertice = mat4MulVec4(rotateMatrixZ, transformedVertice);
+            mat4_t worldMatrix = matIdenetity();
+            worldMatrix = mat4MulMat4(worldMatrix, scaleMatrix);
+            worldMatrix = mat4MulMat4(worldMatrix, rotateMatrixX);
+            worldMatrix = mat4MulMat4(worldMatrix, rotateMatrixY);
+            worldMatrix = mat4MulMat4(worldMatrix, rotateMatrixZ);
+            worldMatrix = mat4MulMat4(worldMatrix, translateMatrix);
 
-            transformedVertice = mat4MulVec4(translateMatrix, transformedVertice);
- 
-           
+            transformedVertice = worldMatrix;//mat4MulVec4(worldMatrix, transformedVertice);
+
             transformedVertices[v] = transformedVertice;
             // translate the points away from the camera
             
