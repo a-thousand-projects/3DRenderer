@@ -60,16 +60,16 @@ void update(void) {
 
     triToRender = NULL;
 
-    mesh.rotation.y += 0.1;
-    mesh.rotation.x += 0.1;
-    mesh.rotation.z += 0.1;
+    mesh.rotation.y += 0.01;
+    mesh.rotation.x += 0.01;
+    mesh.rotation.z += 0.01;
     
-    mesh.scale.x += 0.02;
-    mesh.scale.y += 0.01;
+    mesh.scale.x += 0.002;
+    mesh.scale.y += 0.001;
     mesh.scale.z += 0.0;
 
     mesh.translation.x += 0.01;
-    mesh.translation.z = 5.0;
+    mesh.translation.z = 10.0;
 
     // Create a scale, rotate and translate matrix 
     mat4_t scaleMatrix = matMakeScale(mesh.scale.x, mesh.scale.y, mesh.scale.z);
@@ -98,13 +98,14 @@ void update(void) {
             // Create a wold Matrix for Scale, Rotation and transformation
 
             mat4_t worldMatrix = matIdenetity();
-            worldMatrix = mat4MulMat4(worldMatrix, scaleMatrix);
-            worldMatrix = mat4MulMat4(worldMatrix, rotateMatrixX);
-            worldMatrix = mat4MulMat4(worldMatrix, rotateMatrixY);
-            worldMatrix = mat4MulMat4(worldMatrix, rotateMatrixZ);
-            worldMatrix = mat4MulMat4(worldMatrix, translateMatrix);
+            // Order Matters
+            worldMatrix = mat4MulMat4(scaleMatrix,worldMatrix );
+            worldMatrix = mat4MulMat4(rotateMatrixZ,worldMatrix );
+            worldMatrix = mat4MulMat4(rotateMatrixY,worldMatrix );
+            worldMatrix = mat4MulMat4(rotateMatrixX,worldMatrix );
+            worldMatrix = mat4MulMat4(translateMatrix,worldMatrix );
 
-            transformedVertice = worldMatrix;//mat4MulVec4(worldMatrix, transformedVertice);
+            transformedVertice = mat4MulVec4(worldMatrix, transformedVertice); // Left Matrix transforms one on right!
 
             transformedVertices[v] = transformedVertice;
             // translate the points away from the camera

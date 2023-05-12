@@ -31,6 +31,11 @@ mat4_t matMakeTranslate(float x, float y, float z)
 	return m;
 }
 
+mat4_t matMakeProjection(float fov, float aspect, float znear, float zfar)
+{
+
+}
+
 mat4_t matMakeRotateZ(float angle)
 {
 	// c  -s  0  0
@@ -97,7 +102,7 @@ mat4_t mat4MulMat4(mat4_t a, mat4_t b)
 	{
 		for (int j = 0; j < 4; j++)
 		{
-			m.m[i][j] = a.m[i][0] * b.m[j][0] + a.m[i][1] * b.m[j][1] + a.m[i][2] * b.m[j][2] + a.m[i][3] * b.m[j][3];
+			m.m[i][j] = a.m[i][0] * b.m[0][j] + a.m[i][1] * b.m[1][j] + a.m[i][2] * b.m[2][j] + a.m[i][3] * b.m[3][j];
 		}
 	}
 	return m;
