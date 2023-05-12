@@ -15,3 +15,5 @@ mat4_t matMakeTranslate(float x, float y, float z);
 mat4_t matMakeRotateX(float angle);
 mat4_t matMakeRotateY(float angle);
 mat4_t matMakeRotateZ(float angle);
+mat4_t matMakeProjection(float fov, float aspect, float znear, float zfar);
+vct4_t mat4MulVec4Project(mat4_t matProjection, vct4_t v);

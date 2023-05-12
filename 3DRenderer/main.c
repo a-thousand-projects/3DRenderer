@@ -10,10 +10,11 @@
 
 triange_t *triToRender = NULL;
 vct3_t cameraPosition = {0,0,0};
-
-float fovFactor = 1000;
+mat4_t projectionMatrix;
 
 int previous_frame_time = 0;
+
+
 
 void setup(void) {
 
@@ -28,7 +29,14 @@ void setup(void) {
         SDL_PIXELFORMAT_ARGB8888,
         SDL_TEXTUREACCESS_STREAMING,
         window_width, window_height);
-    
+
+    // Init the prespective Projection matrix
+    float fov = M_PI / 3.0; // 60 Deg in radians
+    float aspect = (float)window_height / (float)window_width;
+    float znear = 0.1;
+    float zfar = 100.0;
+    projectionMatrix = matMakeProjection(fov,aspect,znear,zfar);
+
     loadCubeMeshData();
     //loadObjDatafromFile("assets/cube.obj");
     //loadObjDatafromFile("assets/f22.obj");
@@ -36,15 +44,6 @@ void setup(void) {
 
 }
 
-
-vct2_t project(vct3_t point)    
-{
-    vct2_t projectedPoint = {
-        .x = (fovFactor * point.x)/ (point.z),
-        .y = (fovFactor * point.y)/(point.z)
-    };
-    return projectedPoint;
-}
 
 void update(void) {
 
@@ -66,9 +65,11 @@ void update(void) {
     
     mesh.scale.x += 0.002;
     mesh.scale.y += 0.001;
-    mesh.scale.z += 0.0;
+    mesh.scale.z += 0.001;
 
-    mesh.translation.x += 0.01;
+ 
+
+   // mesh.translation.x += 0.01;
     mesh.translation.z = 10.0;
 
     // Create a scale, rotate and translate matrix 
@@ -135,20 +136,25 @@ void update(void) {
         float cull = vct3Dot (vectorNormal,cameraRay);
         if (cull < 0 && enableFaceCulling) continue;
 
-        
-        vct2_t projectedPoints[3];
+        ////////////////////////////////////////////////////////////
+        // Do Projection
+        ///////////////////////////////////////////////////////////
+        vct4_t projectedPoints[3];
         float aveDepth = 0;
         for (int v = 0; v < 3; v++)
         {
-            // Scale and transate to middle of te screen
-            projectedPoints[v] = project(vec4ToVec3(transformedVertices[v]));
-            projectedPoints[v].x += (window_width / 2);
-            projectedPoints[v].y += (window_height / 2);
-            aveDepth += transformedVertices[v].z;
+            // transate to middle of te screen
+            projectedPoints[v] = mat4MulVec4Project(projectionMatrix, transformedVertices[v]);
+            projectedPoints[v].x *= (window_width / 2.0);
+            projectedPoints[v].y *= (window_height / 2.0);
+
+            // Scale into view
+            projectedPoints[v].x += (window_width / 2.0);
+            projectedPoints[v].y += (window_height / 2.0);
         }
 
         // Calc the Average face depth after transformation
-        aveDepth /= 3;
+        float avg_depth = (transformedVertices[0].z + transformedVertices[1].z + transformedVertices[2].z) / 3.0;
 
         triange_t projectedTriangle = {
 
@@ -162,7 +168,6 @@ void update(void) {
         };
 
         array_push(triToRender, projectedTriangle);
-       // triToRender[i] = projectedTriangle;
     }
     /* sort triangles to render by ave depth*/
 

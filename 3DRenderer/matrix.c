@@ -33,7 +33,38 @@ mat4_t matMakeTranslate(float x, float y, float z)
 
 mat4_t matMakeProjection(float fov, float aspect, float znear, float zfar)
 {
+	// Lecture 12
+	// | (h/w)*1/tan(fov/2)             0              0                 0 |     -- (h/w is the aspect ratio
+	// |                  0  1/tan(fov/2)              0                 0 |
+	// |                  0             0     zf/(zf-zn)  (-zf*zn)/(zf-zn) |
+	// |                  0             0              1                 0 |
 
+	float tfov = 1 / tan(fov / 2);
+
+	mat4_t m = {{{0}}};
+	m.m[0][0] = aspect *  tfov;
+	m.m[1][1] = tfov;
+	m.m[2][2] = zfar / (zfar - znear);
+	m.m[2][3] = (-zfar * znear) / (zfar / znear);
+	m.m[3][2] = 1.0;
+
+	return m;
+
+}
+
+vct4_t mat4MulVec4Project(mat4_t matProjection, vct4_t v)
+{
+	// Multiply by the projection matrix
+	vct4_t result = mat4MulVec4(matProjection, v);
+
+	// perform perspective divide using hthe origional z value
+	if (result.w != 0)
+	{
+		result.x /= result.w;
+		result.y /= result.w;
+		result.z /= result.w;
+	}
+	return result;
 }
 
 mat4_t matMakeRotateZ(float angle)
