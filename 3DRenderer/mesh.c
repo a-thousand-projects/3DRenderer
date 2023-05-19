@@ -23,6 +23,28 @@ vct3_t cubeVertices[N_CUBE_VERTICES] = {
     {.x = -1 , .y = -1 , .z = 1},
 };
 
+/*
+face_t cubeFaces[N_CUBE_FACES] = {
+    // front
+    {.a = 1, .b = 2, .c = 3, 0xFFFFFFFF},
+    {.a = 1, .b = 3, .c = 4, 0xFFFFFFFF},
+    // right
+    {.a = 4, .b = 3, .c = 5, 0xFFFFFFFF },
+    {.a = 4, .b = 5, .c = 6, 0xFFFFFFFF },
+    // back
+    {.a = 6, .b = 5, .c = 7, 0xFFFFFFFF },
+    {.a = 6, .b = 7, .c = 8, 0xFFFFFFFF },
+    // left
+    {.a = 8, .b = 7, .c = 2, 0xFFFFFFFF },
+    {.a = 8, .b = 2, .c = 1, 0xFFFFFFFF },
+    // top
+    {.a = 2, .b = 7, .c = 5, 0xFFFFFFFF },
+    {.a = 2, .b = 5, .c = 3, 0xFFFFFFFF },
+    // bottom
+    {.a = 6, .b = 8, .c = 1, 0xFFFFFFFF },
+    {.a = 6, .b = 1, .c = 4, 0xFFFFFFFF }
+};
+*/
 face_t cubeFaces[N_CUBE_FACES] = {
     // front
     {.a = 1, .b = 2, .c = 3, 0xFFFF0000},
@@ -98,7 +120,7 @@ void loadObjDatafromFile(char* filename)
                 &face.a, &texture[0], &normal[0],
                 &face.b, &texture[1], &normal[1],
                 &face.c, &texture[2], &normal[2]);
-            
+            face.color = 0xFFFFFFFF;
             array_push(mesh.faces, face);
             printf("F = %i,%i,%i\n\r", face.a, face.b, face.c);
         }

@@ -131,15 +131,16 @@
   <ItemGroup>
     <ClCompile Include="array.c" />
     <ClCompile Include="display.c" />
+    <ClCompile Include="light.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="matrix.c" />
     <ClCompile Include="mesh.c" />
-    <ClCompile Include="Source.cpp" />
     <ClCompile Include="triangle.c" />
     <ClCompile Include="vectors.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="array.h" />
+    <ClInclude Include="light.h" />
     <ClInclude Include="matrix.h" />
     <ClInclude Include="mesh.h" />
     <ClInclude Include="triangle.h" />

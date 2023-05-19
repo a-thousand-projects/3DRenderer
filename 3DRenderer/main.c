@@ -6,10 +6,12 @@
 #include "mesh.h"
 #include "array.h"
 #include "matrix.h"
+#include "light.h"
 
 
 triange_t *triToRender = NULL;
 vct3_t cameraPosition = {0,0,0};
+vct3_t lightPosition = { 0,1,1 };
 mat4_t projectionMatrix;
 
 int previous_frame_time = 0;
@@ -37,9 +39,9 @@ void setup(void) {
     float zfar = 100.0;
     projectionMatrix = matMakeProjection(fov,aspect,znear,zfar);
 
-    loadCubeMeshData();
+    //loadCubeMeshData();
     //loadObjDatafromFile("assets/cube.obj");
-    //loadObjDatafromFile("assets/f22.obj");
+    loadObjDatafromFile("assets/f22.obj");
     //loadObjDatafromFile("assets/pi.obj");
 
 }
@@ -132,9 +134,15 @@ void update(void) {
 
         // Find vector between camera and face
         vct3_t cameraRay = vct3Subtract( cameraPosition,vectorA);
-        // Calc hpw aligned the ray and face normal is
+        // Calc how aligned the ray and face normal is
         float cull = vct3Dot (vectorNormal,cameraRay);
         if (cull < 0 && enableFaceCulling) continue;
+
+
+        // calculate light shading 
+        float lightFactor = -vct3Dot(vectorNormal, lightPosition);
+        
+
 
         ////////////////////////////////////////////////////////////
         // Do Projection
@@ -163,7 +171,7 @@ void update(void) {
                 projectedPoints[1].x, projectedPoints[1].y,
                 projectedPoints[2].x, projectedPoints[2].y,
             },
-            meshFace.color,
+            lightApplyIntensity(meshFace.color,lightFactor),
             aveDepth
         };
 
