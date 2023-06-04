@@ -141,6 +141,7 @@
   <ItemGroup>
     <ClInclude Include="array.h" />
     <ClInclude Include="light.h" />
+    <ClInclude Include="main.h" />
     <ClInclude Include="matrix.h" />
     <ClInclude Include="mesh.h" />
     <ClInclude Include="triangle.h" />
@@ -154,6 +155,12 @@
     <Library Include="..\..\..\..\..\..\SDL\lib\x64\SDL2.lib" />
     <Library Include="..\..\..\..\..\..\SDL\lib\x64\SDL2main.lib" />
     <Library Include="..\..\..\..\..\..\SDL\lib\x64\SDL2test.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="assets\clamp.obj">
+      <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Resource>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <SDL.h>
 #include "display.h"
+#include "main.h"
 
 int window_height = 600;
 int window_width = 800;
@@ -14,6 +15,7 @@ uint32_t prevFrameTime=0;
 
 displayWireFrameMode_t displayWireFrameMode;
 bool enableFaceCulling  ;
+
 
 
 
@@ -71,7 +73,6 @@ void renderColorBuffer(void)
 
 void drawGrid(uint8_t col, uint8_t row, uint32_t color, gridMode_t mode)
 {
-
     for (int x = 0; x < window_width; x++) {
         for (int y = 0; y < window_height; y++) {
             if ((((y % col) == 0) && ((x % row) == 0)) && mode == GRID_DOTS)
@@ -100,16 +101,13 @@ void drawLine(int x, int y, int x1, int y1, uint32_t color)
     float currentX = x;
     float currentY = y;
 
-    for (int i = 0; i < sideLength; i++)
+    for (int i = 0; i <= sideLength; i++)
     {
-        drawPixel(round(currentX), round(currentY),color);
+        drawPixel((int)round(currentX), (int)round(currentY),color);
         currentX += incX;
         currentY += incY;
     }
-
 }
-
-
 
 void drawTriangle(int x, int y, int x1, int y1, int x2, int y2, uint32_t color)
 {
@@ -202,9 +200,9 @@ void process_input(void)
         {
             enableFaceCulling = false;
         }
-        
-
-
+        break;
+    case  SDL_MOUSEWHEEL:
+        setZoom(event.wheel.y);
         
         break;
 

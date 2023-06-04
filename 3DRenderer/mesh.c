@@ -100,7 +100,7 @@ void loadObjDatafromFile(char* filename)
     while (fgets(objString, 1024, filePtr))
     {
         
-        if (!strncmp(objString,"v ",2))
+        if (strncmp(objString,"v ",2) ==0)
         {
             vct3_t vector = {0,0,0};
             /* Process a vector (v -1.000000 -1.000000 1.000000) */
@@ -109,18 +109,22 @@ void loadObjDatafromFile(char* filename)
             printf("V = %f,%f,%f\n\r", vector.x, vector.y, vector.z);
         }
 
-        if (!strncmp(objString, "f ", 2))
+        if (strncmp(objString, "f ", 2)==0)
         {
-            /* f 1/1/1 2/2/1 3/3/1 */
-            face_t face = { 0,0,0 };
-            int texture[3] = { 0,0,0 };
-            int normal[3] = { 0,0,0 };
-            sscanf_s(&objString,
-                "f %d/%d/%d %d/%d/%d %d/%d/%d",
-                &face.a, &texture[0], &normal[0],
-                &face.b, &texture[1], &normal[1],
-                &face.c, &texture[2], &normal[2]);
-            face.color = 0xFFFFFFFF;
+            int vertex_indices[3];
+            int texture_indices[3];
+            int normal_indices[3];
+            sscanf_s(objString, "f %d/%d/%d %d/%d/%d %d/%d/%d",
+                &vertex_indices[0], &texture_indices[0], &normal_indices[0],
+                &vertex_indices[1], &texture_indices[1], &normal_indices[1],
+                &vertex_indices[2], &texture_indices[2], &normal_indices[2]
+            );
+            face_t face = {
+                .a = vertex_indices[0],
+                .b = vertex_indices[1],
+                .c = vertex_indices[2],
+                .color = 0xFFFFFFFF
+            };
             array_push(mesh.faces, face);
             printf("F = %i,%i,%i\n\r", face.a, face.b, face.c);
         }

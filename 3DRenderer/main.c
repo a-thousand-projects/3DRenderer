@@ -11,7 +11,7 @@
 
 triange_t *triToRender = NULL;
 vct3_t cameraPosition = {0,0,0};
-vct3_t lightPosition = { 0,1,1 };
+vct3_t lightPosition = { 0,0,1 };
 mat4_t projectionMatrix;
 
 int previous_frame_time = 0;
@@ -33,19 +33,26 @@ void setup(void) {
         window_width, window_height);
 
     // Init the prespective Projection matrix
-    float fov = M_PI / 3.0; // 60 Deg in radians
+    float fov = (float)M_PI / 3.0; // 60 Deg in radians
     float aspect = (float)window_height / (float)window_width;
-    float znear = 0.1;
+    float znear = (float)0.1;
     float zfar = 100.0;
     projectionMatrix = matMakeProjection(fov,aspect,znear,zfar);
 
     //loadCubeMeshData();
-    //loadObjDatafromFile("assets/cube.obj");
-    loadObjDatafromFile("assets/f22.obj");
-    //loadObjDatafromFile("assets/pi.obj");
+   // loadObjDatafromFile("assets/cube.obj");
+   loadObjDatafromFile("assets/f22.obj");
+   // loadObjDatafromFile("assets/clamp.obj");
+
+    mesh.translation.z = 50;
 
 }
 
+
+void setZoom(int z)
+{
+    mesh.translation.z += z;
+}
 
 void update(void) {
 
@@ -61,18 +68,19 @@ void update(void) {
 
     triToRender = NULL;
 
-    mesh.rotation.y += 0.01;
-    mesh.rotation.x += 0.01;
-    mesh.rotation.z += 0.01;
+  //  mesh.rotation.y += 0.01;
+    mesh.rotation.x += 0.003;
+  //  mesh.rotation.z += 0.01;
     
-    mesh.scale.x += 0.002;
-    mesh.scale.y += 0.001;
-    mesh.scale.z += 0.001;
+  //  mesh.scale.x += 0.002;
+  //  mesh.scale.y += 0.001;
+  //  mesh.scale.z += 0.001;
 
+   
  
 
    // mesh.translation.x += 0.01;
-    mesh.translation.z = 10.0;
+   // mesh.translation.z = 100.0;
 
     // Create a scale, rotate and translate matrix 
     mat4_t scaleMatrix = matMakeScale(mesh.scale.x, mesh.scale.y, mesh.scale.z);
@@ -129,26 +137,29 @@ void update(void) {
         vct3_t vectorNormal = vct3Cross(vectorAB, vectorAC); //This order cos we are using left handed system
 
         // Normalise the Normal
-
         vct3Nomialiase(&vectorNormal);
 
         // Find vector between camera and face
         vct3_t cameraRay = vct3Subtract( cameraPosition,vectorA);
         // Calc how aligned the ray and face normal is
         float cull = vct3Dot (vectorNormal,cameraRay);
-        if (cull < 0 && enableFaceCulling) continue;
+        if (enableFaceCulling)
+        {
+            if (cull < 0)
+            {
+                continue;
+            }
+        }
+     
 
 
         // calculate light shading 
         float lightFactor = -vct3Dot(vectorNormal, lightPosition);
         
-
-
         ////////////////////////////////////////////////////////////
         // Do Projection
         ///////////////////////////////////////////////////////////
         vct4_t projectedPoints[3];
-        float aveDepth = 0;
         for (int v = 0; v < 3; v++)
         {
             // transate to middle of te screen
@@ -172,7 +183,7 @@ void update(void) {
                 projectedPoints[2].x, projectedPoints[2].y,
             },
             lightApplyIntensity(meshFace.color,lightFactor),
-            aveDepth
+            avg_depth
         };
 
         array_push(triToRender, projectedTriangle);
@@ -180,27 +191,20 @@ void update(void) {
     /* sort triangles to render by ave depth*/
 
     /* Simple Buble Sort*/
-    int sortDone = false;
-    triange_t tmp;
     uint16_t triangleCount = array_length(triToRender);
-    while (!sortDone)
+   
+    for (int i = 0; i < triangleCount; i++)
     {
-        
-        sortDone = true;
-        for (int t = 0; t < triangleCount - 1;t++)
+        for (int j = i; j < triangleCount; j++)
         {
-            triange_t triFirst = triToRender[t];
-            triange_t triSecond = triToRender[t+1];
-            if (triFirst.aveFaceDepth < triSecond.aveFaceDepth)
+            if (triToRender[i].aveFaceDepth < triToRender[j].aveFaceDepth)
             {
-                tmp = triToRender[t+1];
-                triToRender[t + 1] = triToRender[t];
-                triToRender[t] = tmp;
-                sortDone = false;
+                triange_t temp = triToRender[i];
+                triToRender[i] = triToRender[j];
+                triToRender[j] = temp;
             }
         }
     }
-
 }
 
 void render(void)
@@ -209,7 +213,7 @@ void render(void)
 
     drawGrid(50, 50, 0x0000FF00, GRID_DOTS);
     uint16_t triArrayLen = array_length(triToRender);
-    int dotSize = 20 / 2;
+    int dotSize = 10 / 2;
    for (int i = 0; i < triArrayLen; i++)
     {
         triange_t triangle = triToRender[i];
@@ -221,15 +225,15 @@ void render(void)
         } 
         if (displayWireFrameMode == RenderFilledOnly || displayWireFrameMode == RenderFilledAndWire)
         {
-            drawFilledTriangle(triangle.points[0].x, triangle.points[0].y,
+            drawFilledTriangle(triangle.points[0].x,triangle.points[0].y,
                 triangle.points[1].x, triangle.points[1].y,
-                triangle.points[2].x, triangle.points[2].y, 
+                triangle.points[2].x, triangle.points[2].y,
                 triangle.color);
         }
        
-        if (displayWireFrameMode == RenderWireOnly || displayWireFrameMode == RenderFilledAndWire || displayWireFrameMode == RenderWireAndDot)
+        if (displayWireFrameMode == RenderWireOnly  || displayWireFrameMode == RenderWireAndDot)
         {
-            drawTriangle(triangle.points[0].x, triangle.points[0].y,
+            drawTriangle(triangle.points[0].x,triangle.points[0].y,
                 triangle.points[1].x, triangle.points[1].y,
                 triangle.points[2].x, triangle.points[2].y, 0xffff00);
         }
