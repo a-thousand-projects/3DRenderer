@@ -167,6 +167,9 @@ void update(void) {
             projectedPoints[v].x *= (window_width / 2.0);
             projectedPoints[v].y *= (window_height / 2.0);
 
+            // Invert Y values cos screen grows down, not up
+            projectedPoints[v].y *= -1;
+
             // Scale into view
             projectedPoints[v].x += (window_width / 2.0);
             projectedPoints[v].y += (window_height / 2.0);
