@@ -13,7 +13,7 @@ uint32_t* colorBuffer = NULL;
 bool is_running = false;
 uint32_t prevFrameTime=0;
 
-displayWireFrameMode_t displayWireFrameMode;
+displayWireFrameMode_t renderMethod;
 bool enableFaceCulling  ;
 
 
@@ -109,13 +109,6 @@ void drawLine(int x, int y, int x1, int y1, uint32_t color)
     }
 }
 
-void drawTriangle(int x, int y, int x1, int y1, int x2, int y2, uint32_t color)
-{
-    drawLine(x, y, x1, y1, color);
-    drawLine(x1, y1, x2, y2, color);
-    drawLine(x2, y2, x, y, color);
-}
-
 void drawHorzLine(int x, int y, int length, uint32_t color)
 {
     int xStart;
@@ -175,21 +168,31 @@ void process_input(void)
 
         if (event.key.keysym.sym == SDLK_1)
         {
-            displayWireFrameMode = RenderWireOnly;
+            renderMethod = RENDER_WIRE_VERTEX;
 
         }
         else if (event.key.keysym.sym == SDLK_2)
         {
-            displayWireFrameMode = RenderWireAndDot;
+            renderMethod = RENDER_WIRE;
 
         }else if (event.key.keysym.sym == SDLK_3)
         {
-            displayWireFrameMode = RenderFilledOnly;
+            renderMethod = RENDER_FILLED_TRIANGLE;
 
         }
         else if (event.key.keysym.sym == SDLK_4)
         {
-            displayWireFrameMode = RenderFilledAndWire;
+            renderMethod = RENDER_FILLED_TRIANGLE_WIRE;
+
+        }
+        else if (event.key.keysym.sym == SDLK_5)
+        {
+            renderMethod = RENDER_TEXTURED;
+
+        }
+        else if (event.key.keysym.sym == SDLK_6)
+        {
+            renderMethod = RENDER_TEXTURED_WIRE;
 
         }
         else if (event.key.keysym.sym == SDLK_c)
@@ -200,6 +203,7 @@ void process_input(void)
         {
             enableFaceCulling = false;
         }
+       
         break;
     case  SDL_MOUSEWHEEL:
         setZoom(event.wheel.y);

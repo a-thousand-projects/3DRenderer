@@ -20,7 +20,7 @@ int previous_frame_time = 0;
 
 void setup(void) {
 
-    displayWireFrameMode = RenderWireOnly;
+    renderMethod = RENDER_WIRE_VERTEX;
     enableFaceCulling = true;
 
     colorBuffer = (uint32_t*)malloc(sizeof(uint32_t) * window_width * window_height);
@@ -185,6 +185,11 @@ void update(void) {
                 projectedPoints[1].x, projectedPoints[1].y,
                 projectedPoints[2].x, projectedPoints[2].y,
             },
+            .texCoords = {
+                {meshFace.a_uv.u,meshFace.a_uv.v},
+                {meshFace.b_uv.u,meshFace.b_uv.v},
+                {meshFace.c_uv.u,meshFace.b_uv.v},
+            },
             lightApplyIntensity(meshFace.color,lightFactor),
             avg_depth
         };
@@ -220,21 +225,27 @@ void render(void)
    for (int i = 0; i < triArrayLen; i++)
     {
         triange_t triangle = triToRender[i];
-        if (displayWireFrameMode == RenderWireAndDot)
+        if (renderMethod == RENDER_WIRE)
         {
             drawRect(triangle.points[0].x - dotSize, triangle.points[0].y - dotSize, dotSize, dotSize, 0xFF0000);
             drawRect(triangle.points[1].x - dotSize, triangle.points[1].y - dotSize, dotSize, dotSize, 0xFF0000);
             drawRect(triangle.points[2].x - dotSize, triangle.points[2].y - dotSize, dotSize, dotSize, 0xFF0000);
         } 
-        if (displayWireFrameMode == RenderFilledOnly || displayWireFrameMode == RenderFilledAndWire)
+        // Draw Textured Triangle 
+        if (renderMethod == RENDER_TEXTURED || renderMethod == RENDER_FILLED_TRIANGLE_WIRE)
+        {
+            // drawTexturedTriangle
+        }
+        
+        if (renderMethod == RENDER_FILLED_TRIANGLE || renderMethod == RENDER_FILLED_TRIANGLE_WIRE)
         {
             drawFilledTriangle(triangle.points[0].x,triangle.points[0].y,
                 triangle.points[1].x, triangle.points[1].y,
                 triangle.points[2].x, triangle.points[2].y,
-                triangle.color);
+                triangle.color );
         }
        
-        if (displayWireFrameMode == RenderWireOnly  || displayWireFrameMode == RenderWireAndDot)
+        if (renderMethod == RENDER_WIRE_VERTEX  || renderMethod == RENDER_WIRE || renderMethod == RENDER_TEXTURED_WIRE)
         {
             drawTriangle(triangle.points[0].x,triangle.points[0].y,
                 triangle.points[1].x, triangle.points[1].y,

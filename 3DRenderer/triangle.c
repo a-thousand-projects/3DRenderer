@@ -8,6 +8,15 @@ void fill_flatBottomTriangle(int x0,int y0,int x1,int y1,int x2,int y2, uint32_t
 
 void fill_flatToppedTriangel(int x0,int y0,int x1,int y1,int x2,int y2, uint32_t color);
 
+
+
+void drawTriangle(int x, int y, int x1, int y1, int x2, int y2, uint32_t color)
+{
+    drawLine(x, y, x1, y1, color);
+    drawLine(x1, y1, x2, y2, color);
+    drawLine(x2, y2, x, y, color);
+}
+
 void intSwap(int* a, int* b)
 {
     int temp = *a;

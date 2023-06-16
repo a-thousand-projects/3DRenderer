@@ -17,10 +17,12 @@ typedef enum
 
 typedef enum
 {
-    RenderWireAndDot = 1,
-    RenderWireOnly,
-    RenderFilledOnly,
-    RenderFilledAndWire
+    RENDER_WIRE = 1,
+    RENDER_WIRE_VERTEX,
+    RENDER_FILLED_TRIANGLE,
+    RENDER_FILLED_TRIANGLE_WIRE,
+    RENDER_TEXTURED,
+    RENDER_TEXTURED_WIRE
 }displayWireFrameMode_t;
 
 extern int window_height;
@@ -31,7 +33,7 @@ extern SDL_Texture* colorBufferTexture;
 extern uint32_t* colorBuffer;
 extern bool is_running;
 extern uint32_t prevFrameTime;
-extern displayWireFrameMode_t displayWireFrameMode;
+extern displayWireFrameMode_t renderMethod;
 extern bool enableFaceCulling;
 
 
@@ -48,6 +50,6 @@ void clearColorBuffer(uint32_t color);
 bool checkWindowBounds(uint16_t x, uint16_t y);
 void drawPixel(int x, int y, uint32_t color);
 void drawLine(int x, int y, int x1, int y1, uint32_t color);
-void drawTriangle(int x, int y, int x1, int y1, int x2, int y2, uint32_t color);
+
 
 #endif
