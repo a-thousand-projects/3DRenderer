@@ -234,7 +234,10 @@ void render(void)
         // Draw Textured Triangle 
         if (renderMethod == RENDER_TEXTURED || renderMethod == RENDER_FILLED_TRIANGLE_WIRE)
         {
-            // drawTexturedTriangle
+            // drawTexturedTriangle(triangle.points[0].x,triangle.points[0].y,
+            //triangle.points[1].x, triangle.points[1].y,
+             //   triangle.points[2].x, triangle.points[2].y,
+            //    triangle.color );
         }
         
         if (renderMethod == RENDER_FILLED_TRIANGLE || renderMethod == RENDER_FILLED_TRIANGLE_WIRE)
@@ -251,6 +254,7 @@ void render(void)
                 triangle.points[1].x, triangle.points[1].y,
                 triangle.points[2].x, triangle.points[2].y, 0xffff00);
         }
+
     }
     
     
