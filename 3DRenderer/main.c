@@ -7,6 +7,7 @@
 #include "array.h"
 #include "matrix.h"
 #include "light.h"
+#include "texture.h"
 
 
 triange_t *triToRender = NULL;
@@ -39,9 +40,11 @@ void setup(void) {
     float zfar = 100.0;
     projectionMatrix = matMakeProjection(fov,aspect,znear,zfar);
 
-    //loadCubeMeshData();
+    mesh_texture = (uint32_t*)REDBRICK_TEXTURE;
+
+    loadCubeMeshData();
    // loadObjDatafromFile("assets/cube.obj");
-   loadObjDatafromFile("assets/f22.obj");
+   //loadObjDatafromFile("assets/f22.obj");
    // loadObjDatafromFile("assets/clamp.obj");
 
     mesh.translation.z = 50;
@@ -234,10 +237,10 @@ void render(void)
         // Draw Textured Triangle 
         if (renderMethod == RENDER_TEXTURED || renderMethod == RENDER_FILLED_TRIANGLE_WIRE)
         {
-            // drawTexturedTriangle(triangle.points[0].x,triangle.points[0].y,
-            //triangle.points[1].x, triangle.points[1].y,
-             //   triangle.points[2].x, triangle.points[2].y,
-            //    triangle.color );
+             drawTexturedTriangle(  triangle.points[0].x,triangle.points[0].y,triangle.texCoords[0].u,triangle.texCoords[0].v,
+                                    triangle.points[1].x, triangle.points[1].y, triangle.texCoords[1].u, triangle.texCoords[1].v,
+                                    triangle.points[2].x, triangle.points[2].y, triangle.texCoords[2].u, triangle.texCoords[2].v,
+                triangle.color );
         }
         
         if (renderMethod == RENDER_FILLED_TRIANGLE || renderMethod == RENDER_FILLED_TRIANGLE_WIRE)

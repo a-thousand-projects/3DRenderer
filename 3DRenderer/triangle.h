@@ -25,4 +25,7 @@ typedef struct {
 void drawFilledTriangle(int x, int y, int x1, int y1, int x2, int y2, uint32_t color);
 void drawTriangle(int x, int y, int x1, int y1, int x2, int y2, uint32_t color);
 
-// drawTexturedTriangle(.....);
+void drawTexturedTriangle(
+		int x, int y, float u0, float v0,
+		int x1, int y1, float u1, float v1,
+		int x2, int y2, float u2, float v2);
