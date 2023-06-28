@@ -24,6 +24,13 @@ void intSwap(int* a, int* b)
     *b = temp;
 }
 
+void floatSwap(float* a, float* b)
+{
+    float temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
 void drawFilledTriangle(int x0, int y0, int x1, int y1, int x2, int y2, uint32_t color)
 {
     // Sort vertices by Y coordinates y1 < Y2 < y3
@@ -108,9 +115,29 @@ void fill_flatToppedTriangel(int x0, int y0, int x1, int y1, int x2, int y2, uin
 /*                 TEXTURED FUNCTIONS                                     */
 /**************************************************************************/
 void drawTexturedTriangle(
-    int x, int y, float u0, float v0,
+    int x0, int y0, float u0, float v0,
     int x1, int y1, float u1, float v1,
-    int x2, int y2, float u2, float v2)
+    int x2, int y2, float u2, float v2,
+    uint32_t* texture)
 {
+    // Sort by y value (y < y1 < y2)
+    // Sort vertices by Y coordinates y1 < Y2 < y3
+    if (y0 > y1)
+    {
+        intSwap(&y0, &y1);
+        intSwap(&x0, &x1);
+        floatSwap(&u0, &u1);
+        floatSwap(&v0, &v1);
+    }
+    if (y1 > y2)
+    {
+        intSwap(&y1, &y2);
+        intSwap(&x1, &x2);
+    }
+    if (y0 > y1)
+    {
+        intSwap(&y0, &y1);
+        intSwap(&x0, &x1);
+    }
 
 }
