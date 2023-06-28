@@ -17,6 +17,8 @@ void drawTriangle(int x, int y, int x1, int y1, int x2, int y2, uint32_t color)
     drawLine(x2, y2, x, y, color);
 }
 
+
+put swap fnc itto own swap.c file
 void intSwap(int* a, int* b)
 {
     int temp = *a;
