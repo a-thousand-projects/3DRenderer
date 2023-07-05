@@ -3,6 +3,7 @@
 #include <SDL.h>
 #include "triangle.h"
 #include "display.h"
+#include "swap.h"
 
 void fill_flatBottomTriangle(int x0,int y0,int x1,int y1,int x2,int y2, uint32_t color);
 
@@ -18,20 +19,8 @@ void drawTriangle(int x, int y, int x1, int y1, int x2, int y2, uint32_t color)
 }
 
 
-put swap fnc itto own swap.c file
-void intSwap(int* a, int* b)
-{
-    int temp = *a;
-    *a = *b;
-    *b = temp;
-}
 
-void floatSwap(float* a, float* b)
-{
-    float temp = *a;
-    *a = *b;
-    *b = temp;
-}
+
 
 void drawFilledTriangle(int x0, int y0, int x1, int y1, int x2, int y2, uint32_t color)
 {
@@ -135,11 +124,22 @@ void drawTexturedTriangle(
     {
         intSwap(&y1, &y2);
         intSwap(&x1, &x2);
+        floatSwap(&u1, &u2);
+        floatSwap(&v1, &v2);
     }
     if (y0 > y1)
     {
         intSwap(&y0, &y1);
         intSwap(&x0, &x1);
+        floatSwap(&u0, &u1);
+        floatSwap(&v0, &v1);
     }
+    // Render Upper oart if triangle
+    float invSlope1 = 0;
+    float invSlope2 = 0;
 
+    if (y1 - y0 != 0) 
+        invSlope1 = (float)(x1 - x0) / abs(y1 - y0);
+    if (y2 - y0 != 0) 
+        invSlope2 = (float)(x2 - x0) / abs(y2 - y0);
 }
