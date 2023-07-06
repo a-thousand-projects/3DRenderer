@@ -142,4 +142,22 @@ void drawTexturedTriangle(
         invSlope1 = (float)(x1 - x0) / abs(y1 - y0);
     if (y2 - y0 != 0) 
         invSlope2 = (float)(x2 - x0) / abs(y2 - y0);
+    if (y1 - y0 != 0)
+    {
+        for (int y = y0; y < y1; y++)
+        {
+            int xStart = x1 + (y - y1) * invSlope1;
+            int xEnd = x0 + (y - y0) * invSlope2;
+            uint32_t col = 0xCD127700;
+            if (xStart > xEnd)
+            {
+                intSwap(&xStart, &xEnd);
+            }
+            for (int x = xStart; x < xEnd; x++)
+            {
+                drawPixel(x, y, 0xFF1277FF);
+            }
+
+        }
+    }
 }

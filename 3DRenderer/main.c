@@ -47,7 +47,7 @@ void setup(void) {
    //loadObjDatafromFile("assets/f22.obj");
    // loadObjDatafromFile("assets/clamp.obj");
 
-    mesh.translation.z = 50;
+    mesh.translation.z = 10;
 
 }
 
@@ -72,7 +72,7 @@ void update(void) {
     triToRender = NULL;
 
   //  mesh.rotation.y += 0.01;
-    mesh.rotation.x += 0.003;
+    mesh.rotation.x += 0.03;
   //  mesh.rotation.z += 0.01;
     
   //  mesh.scale.x += 0.002;
@@ -240,7 +240,7 @@ void render(void)
              drawTexturedTriangle(  triangle.points[0].x,triangle.points[0].y,triangle.texCoords[0].u,triangle.texCoords[0].v,
                                     triangle.points[1].x, triangle.points[1].y, triangle.texCoords[1].u, triangle.texCoords[1].v,
                                     triangle.points[2].x, triangle.points[2].y, triangle.texCoords[2].u, triangle.texCoords[2].v,
-                triangle.color );
+                mesh_texture);
         }
         
         if (renderMethod == RENDER_FILLED_TRIANGLE || renderMethod == RENDER_FILLED_TRIANGLE_WIRE)
