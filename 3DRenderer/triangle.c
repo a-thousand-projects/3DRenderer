@@ -134,7 +134,9 @@ void drawTexturedTriangle(
         floatSwap(&u0, &u1);
         floatSwap(&v0, &v1);
     }
-    // Render Upper oart if triangle
+    /////////////////////////////////////////////
+    // Render Upper part of triangle
+    /////////////////////////////////////////////
     float invSlope1 = 0;
     float invSlope2 = 0;
 
@@ -155,9 +157,38 @@ void drawTexturedTriangle(
             }
             for (int x = xStart; x < xEnd; x++)
             {
-                drawPixel(x, y, 0xFF1277FF);
+                drawPixel(x, y, (x%2 == 0 && y%2 == 00) ?0xFF1277FF: 0xFF000000);
             }
 
         }
     }
+
+    /////////////////////////////////////////////
+    // Render Lower part of triangle
+    /////////////////////////////////////////////
+
+    if (y2- y1 != 0)
+        invSlope1 = (float)(x2 - x1) / abs(y2 - y1);
+    if (y2 - y0 != 0)
+        invSlope2 = (float)(x2 - x0) / abs(y2 - y0);
+
+    if (y2 - y0 != 0)
+    {
+        for (int y = y1; y < y2; y++)
+        {
+            int xStart = x1 + (y - y1) * invSlope1;
+            int xEnd = x0 + (y - y0) * invSlope2;
+            
+            if (xStart > xEnd)
+            {
+                intSwap(&xStart, &xEnd);
+            }
+            for (int x = xStart; x < xEnd; x++)
+            {
+                drawPixel(x, y, 0xFF00AA33);
+            }
+
+        }
+    }
+
 }
