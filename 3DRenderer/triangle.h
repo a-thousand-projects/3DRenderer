@@ -30,3 +30,6 @@ void drawTexturedTriangle(
 		int x1, int y1, float u1, float v1,
 		int x2, int y2, float u2, float v2,
 		uint32_t* texture);
+
+void drawTextel(int x, int y, vct2_t pointA, vct2_t pointB, vct2_t pointC,
+	float u0, float v0, float u1, float v1, float u2, float v2, uint32_t* texture);

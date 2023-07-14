@@ -105,6 +105,17 @@ void fill_flatToppedTriangel(int x0, int y0, int x1, int y1, int x2, int y2, uin
 /**************************************************************************/
 /*                 TEXTURED FUNCTIONS                                     */
 /**************************************************************************/
+
+
+/*
+* Draw textrue pixel
+*/
+void drawTextel(int x, int y, vct2_t pointA, vct2_t pointB, vct2_t pointC,
+    float u0, float v0, float u1, float v1, float u2, float v2, uint32_t* texture)
+{
+
+}
+
 void drawTexturedTriangle(
     int x0, int y0, float u0, float v0,
     int x1, int y1, float u1, float v1,
@@ -134,6 +145,12 @@ void drawTexturedTriangle(
         floatSwap(&u0, &u1);
         floatSwap(&v0, &v1);
     }
+
+    // Set up pixel vectors
+    vct2_t pointA = { x0, y0 };
+    vct2_t pointB = { x1, y1 };
+    vct2_t pointC = { x2, y2 };
+
     /////////////////////////////////////////////
     // Render Upper part of triangle
     /////////////////////////////////////////////
@@ -157,7 +174,8 @@ void drawTexturedTriangle(
             }
             for (int x = xStart; x < xEnd; x++)
             {
-                drawPixel(x, y, (x%2 == 0 && y%2 == 00) ?0xFF1277FF: 0xFF000000);
+                //drawPixel(x, y, (x%2 == 0 && y%2 == 00) ?0xFF1277FF: 0xFF000000);
+                drawTexel(x, y, pointA,pointB,pointC,u0,v0,u1,v1,u2,v2, texture);
             }
 
         }
