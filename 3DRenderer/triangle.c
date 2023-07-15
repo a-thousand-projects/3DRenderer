@@ -181,7 +181,7 @@ vct3_t barycentric_weights(vct2_t a, vct2_t b, vct2_t c, vct2_t p)
     float areaParallelogramABC = (ac.x * ab.y - ac.y * ab.x);
 
     // Alpha is the area of the small parallelogram triangle PBC devided by the full parallelogram area
-    float alpha = (pc.x * pb.y - pc.y * pb.x) / areaParallelogramABC;
+     float alpha = (pc.x * pb.y - pc.y * pb.x) / areaParallelogramABC;
 
     // Beta is the area of the small parallelogram triangle APC devided by the full parallelogram area
     float beta = (ac.x * ap.y - ac.y * ap.x) / areaParallelogramABC;
