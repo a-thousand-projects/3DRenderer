@@ -25,11 +25,12 @@ typedef struct {
 void drawFilledTriangle(int x, int y, int x1, int y1, int x2, int y2, uint32_t color);
 void drawTriangle(int x, int y, int x1, int y1, int x2, int y2, uint32_t color);
 
-void drawTexturedTriangle(
-		int x0, int y0, float u0, float v0,
-		int x1, int y1, float u1, float v1,
-		int x2, int y2, float u2, float v2,
-		uint32_t* texture);
 
-void drawTextel(int x, int y, vct2_t pointA, vct2_t pointB, vct2_t pointC,
+void drawTexturedTriangle(
+	int x0, int y0, float u0, float v0,
+	int x1, int y1, float u1, float v1,
+	int x2, int y2, float u2, float v2,
+	uint32_t* texture);
+
+void drawTexel(int x, int y, vct2_t pointA, vct2_t pointB, vct2_t pointC,
 	float u0, float v0, float u1, float v1, float u2, float v2, uint32_t* texture);

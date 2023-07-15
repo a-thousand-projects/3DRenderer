@@ -8,6 +8,7 @@
 #include "matrix.h"
 #include "light.h"
 #include "texture.h"
+#include "triangle.h"
 
 
 triange_t *triToRender = NULL;
@@ -240,7 +241,7 @@ void render(void)
              drawTexturedTriangle(  triangle.points[0].x,triangle.points[0].y,triangle.texCoords[0].u,triangle.texCoords[0].v,
                                     triangle.points[1].x, triangle.points[1].y, triangle.texCoords[1].u, triangle.texCoords[1].v,
                                     triangle.points[2].x, triangle.points[2].y, triangle.texCoords[2].u, triangle.texCoords[2].v,
-                mesh_texture);
+                                    mesh_texture);
         }
         
         if (renderMethod == RENDER_FILLED_TRIANGLE || renderMethod == RENDER_FILLED_TRIANGLE_WIRE)
