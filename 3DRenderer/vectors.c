@@ -21,7 +21,7 @@ vct2_t vct2Add(vct2_t a, vct2_t b)
 vct2_t vct2Subtract(vct2_t a, vct2_t b)
 {
 	vct2_t r;
-	r.x = a.x - a.x;
+	r.x = a.x - b.x;
 	r.y = a.y - b.y;
 	return r;
 }

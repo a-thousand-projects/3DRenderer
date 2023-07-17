@@ -172,13 +172,13 @@ vct3_t barycentric_weights(vct2_t a, vct2_t b, vct2_t c, vct2_t p)
 {
     // find the vectors between the vertices ABC and point p
     vct2_t ac = vct2Subtract(c, a);
-    vct2_t ab = vct2Subtract(a, a);
+    vct2_t ab = vct2Subtract(b, a);
     vct2_t ap = vct2Subtract(p, a);
     vct2_t pc = vct2Subtract(c, p);
     vct2_t pb = vct2Subtract(b, p);
 
     // Calculate the area of the full parallelogram ABC using 2d cross product
-    float areaParallelogramABC = (ac.x * ab.y - ac.y * ab.x);
+    float areaParallelogramABC = (ac.x * ab.y + ac.y * ab.x); // || AC * AB ||
 
     // Alpha is the area of the small parallelogram triangle PBC devided by the full parallelogram area
      float alpha = (pc.x * pb.y - pc.y * pb.x) / areaParallelogramABC;
@@ -207,18 +207,18 @@ void drawTexel(int x, int y, vct2_t pointA, vct2_t pointB, vct2_t pointC,
     float beta = weights.y;
     float gamma = weights.z;
 
-    float interpolatedU = u0 * alpha + u1*beta + u2 * gamma;
-    float interpolatedV = v0 * alpha + v1 * beta + v2 * gamma;
+    float interpolatedU = (u0) * alpha + (u1) * beta + (u2) * gamma;
+    float interpolatedV = (v0) * alpha + (v1) * beta + (v2) * gamma;
 
-    int texX = abs(interpolatedU * textureWidth);
-    int texY = abs(interpolatedV * textureHeight);
+    int texX = abs((int)interpolatedU * textureWidth);
+    int texY = abs((int)interpolatedV * textureHeight);
 
 
     // todo : check for buffer overflow in texture array
-    int texPos = (textureWidth * texY) + texX;
-    if (texPos < sizeof(texture)) {
+
         drawPixel(x, y, texture[(textureWidth * texY) + texX]);
-    }
+        
+
 }
 
 
