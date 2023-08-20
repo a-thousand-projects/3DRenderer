@@ -73,7 +73,7 @@ void update(void) {
     triToRender = NULL;
 
   //  mesh.rotation.y += 0.01;
-    mesh.rotation.x += 0.03;
+  //  mesh.rotation.x += 0.03;
   //  mesh.rotation.z += 0.01;
     
   //  mesh.scale.x += 0.002;
@@ -236,7 +236,7 @@ void render(void)
             drawRect(triangle.points[2].x - dotSize, triangle.points[2].y - dotSize, dotSize, dotSize, 0xFF0000);
         } 
         // Draw Textured Triangle 
-        if (renderMethod == RENDER_TEXTURED || renderMethod == RENDER_FILLED_TRIANGLE_WIRE)
+        if (renderMethod == RENDER_TEXTURED || renderMethod == RENDER_TEXTURED_WIRE)
         {
              drawTexturedTriangle(  triangle.points[0].x,triangle.points[0].y,triangle.texCoords[0].u,triangle.texCoords[0].v,
                                     triangle.points[1].x, triangle.points[1].y, triangle.texCoords[1].u, triangle.texCoords[1].v,
