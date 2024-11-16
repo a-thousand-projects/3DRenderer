@@ -1,0 +1,20 @@
+{
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "makerun",
+            // this manner can arrived at the breakpoints。 why ???????
+            "command": "make",
+            "args": [
+            ],
+            "options": {
+                //"cwd": "D:\\work_softwares\\mingw64\\bin"
+            },
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }],
+    "version": "2.0.0"
+}
