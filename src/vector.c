@@ -171,5 +171,9 @@ vec2_t vec2_from_vec4(vec4_t v) {
 }
 
 
-
+vec3_t vec3_clone(vec3_t *vector)
+{
+    vec3_t clone = {vector->x, vector->y,vector->z};
+    return clone; 
+}
 

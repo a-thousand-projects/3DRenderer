@@ -109,15 +109,21 @@ void clip_polygon_against_plane(polygon_t *polygon, e_frustrum_planes plane)
     {
         current_dot = vec3_dot(vec3_sub(*current_vertex, plane_point),plane_normal);
 
+        // Test if points are in or out in relation to each other. 
         if (current_dot * previous_dot < 0)
         {
-            // Calculate interpolation factor,  t = gotQ1 / (dotQ1 - dotQ2)
-            vec3_t Q1_Q2 = vec3_sub(current_dot - previous_dot);
-            float t = current_dot / ;
+            // Calculate interpolation factor,  t = dotQ1 / (dotQ1 - dotQ2)
+            float t = previous_dot / (previous_dot - current_dot);
 
             // Calculate intercection point , I = Q1 +t(Q2-Q1)
+            
+            vec3_t intersection_point = vec3_clone(current_vertex);
 
-            inside_vertices[num_insdie_vertices] = vec3_clone(&interception_point);
+            intersection_point = vec3_sub(intersection_point,  *previous_vertex);
+            intersection_point = vec3_mul(intersection_point,t);
+            intersection_point = vec3_add(intersection_point, *previous_vertex);
+
+            inside_vertices[num_insdie_vertices] = vec3_clone(&intersection_point);
             num_insdie_vertices++;
         }
 
@@ -127,12 +133,16 @@ void clip_polygon_against_plane(polygon_t *polygon, e_frustrum_planes plane)
             num_insdie_vertices++;
         }
 
-
         // Move to next vertex
         previous_dot = current_dot;
         previous_vertex = current_vertex;
         current_vertex++;
-
     }
+    // send result back
+    for (int i = 0;i<num_insdie_vertices;i++)
+    {
+        polygon->vertices[i] = vec3_clone(&inside_vertices[i]);
+    }
+    polygon->num_vertices = num_insdie_vertices;
 
 }
