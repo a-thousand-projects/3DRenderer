@@ -1,6 +1,6 @@
+#include <math.h>
 #include "clipping.h"
-#include "math.h"
-#include "triangle.h"
+
 #define NUM_PLANES 6
 plane_t frustum_planes[NUM_PLANES];
 
@@ -9,10 +9,10 @@ plane_t frustum_planes[NUM_PLANES];
 ///////////////////////////////////////////////////////////////////////////////
 // Near plane   :  P=(0, 0, znear), N=(0, 0,  1)
 // Far plane    :  P=(0, 0, zfar),  N=(0, 0, -1)
-// Top plane    :  P=(0, 0, 0),     N=(0, -cos(fov/2), sin(fov/2))
-// Bottom plane :  P=(0, 0, 0),     N=(0, cos(fov/2), sin(fov/2))
-// Left plane   :  P=(0, 0, 0),     N=(cos(fov/2), 0, sin(fov/2))
-// Right plane  :  P=(0, 0, 0),     N=(-cos(fov/2), 0, sin(fov/2))
+// Top plane    :  P=(0, 0, 0),     N=(0, -cos(fovy/2), sin(fovy/2))
+// Bottom plane :  P=(0, 0, 0),     N=(0, cos(fovy/2), sin(fovy/2))
+// Left plane   :  P=(0, 0, 0),     N=(cos(fovx/2), 0, sin(fovx/2))
+// Right plane  :  P=(0, 0, 0),     N=(-cos(fovx/2), 0, sin(fovx/2))
 ///////////////////////////////////////////////////////////////////////////////
 //
 //           /|\
@@ -26,10 +26,8 @@ plane_t frustum_planes[NUM_PLANES];
 //           \|/
 //
 ///////////////////////////////////////////////////////////////////////////////
-
-void init_frustum_planes(float fov_x, float fov_y, float z_near, float z_far)
-{
-float cos_half_fov_x = cos(fov_x / 2);
+void init_frustum_planes(float fov_x, float fov_y, float z_near, float z_far) {
+	float cos_half_fov_x = cos(fov_x / 2);
 	float sin_half_fov_x = sin(fov_x / 2);
 	float cos_half_fov_y = cos(fov_y / 2);
 	float sin_half_fov_y = sin(fov_y / 2);
@@ -65,32 +63,28 @@ float cos_half_fov_x = cos(fov_x / 2);
 	frustum_planes[FAR_FRUSTUM_PLANE].normal.z = -1;
 }
 
-
-
-polygon_t polygon_from_triangle(vec3_t v0, vec3_t v1, vec3_t v2)
-{
-    polygon_t polygon;    
-    polygon.num_vertices = 3;
-    polygon.vertices[0] = v0;
-    polygon.vertices[1] = v1;
-    polygon.vertices[2] = v2;
+polygon_t polygon_from_triangle(vec3_t v0, vec3_t v1, vec3_t v2) {
+    polygon_t polygon = {
+        .vertices = { v0, v1, v2 },
+        .num_vertices = 3
+    };
     return polygon;
 }
 
+void triangles_from_polygon(polygon_t* polygon, triangle_t triangles[], int* num_triangles) {
+    for (int i = 0; i < polygon->num_vertices - 2; i++) {
+        int index0 = 0;
+        int index1 = i + 1;
+        int index2 = i + 2;
 
-void clip_polygon(polygon_t * polygon)
-{
-    clip_polygon_against_plane(polygon, LEFT_FRUSTUM_PLANE);
-    clip_polygon_against_plane(polygon, RIGHT_FRUSTUM_PLANE);
-    clip_polygon_against_plane(polygon, TOP_FRUSTUM_PLANE);
-    clip_polygon_against_plane(polygon, BOTTOM_FRUSTUM_PLANE);
-    clip_polygon_against_plane(polygon, NEAR_FRUSTUM_PLANE);
-    clip_polygon_against_plane(polygon, FAR_FRUSTUM_PLANE);
+        triangles[i].points[0] = vec4_from_vec3(polygon->vertices[index0]);
+        triangles[i].points[1] = vec4_from_vec3(polygon->vertices[index1]);
+        triangles[i].points[2] = vec4_from_vec3(polygon->vertices[index2]);
+    }
+    *num_triangles = polygon->num_vertices - 2;
 }
 
-
-void clip_polygon_against_plane(polygon_t *polygon, e_frustrum_planes plane)
-{
+void clip_polygon_against_plane(polygon_t* polygon, int plane) {
     vec3_t plane_point = frustum_planes[plane].point;
     vec3_t plane_normal = frustum_planes[plane].normal;
 
@@ -143,24 +137,13 @@ void clip_polygon_against_plane(polygon_t *polygon, e_frustrum_planes plane)
         polygon->vertices[i] = vec3_clone(&inside_vertices[i]);
     }
     polygon->num_vertices = num_inside_vertices;
-
 }
 
-
-void triangles_from_polygon(polygon_t *polygon,triangle_t triangles[],int *num_triangles)
-{
-    *num_triangles = 0;
-    for (int i=0;i<polygon->num_vertices - 2;i++)
-    {
-        int index0 = 0;
-        int index1 = i + 1;
-        int index2 = i + 2;
-
-        triangles[i].points[0] = vec4_from_vec3(polygon->vertices[index0]);
-        triangles[i].points[1] = vec4_from_vec3(polygon->vertices[index1]);
-        triangles[i].points[2] = vec4_from_vec3(polygon->vertices[index2]);
-    }
-
-        *num_triangles = polygon->num_vertices - 2;
-
+void clip_polygon(polygon_t* polygon) {
+    clip_polygon_against_plane(polygon, LEFT_FRUSTUM_PLANE);
+    clip_polygon_against_plane(polygon, RIGHT_FRUSTUM_PLANE);
+    clip_polygon_against_plane(polygon, TOP_FRUSTUM_PLANE);
+    clip_polygon_against_plane(polygon, BOTTOM_FRUSTUM_PLANE);
+    clip_polygon_against_plane(polygon, NEAR_FRUSTUM_PLANE);
+    clip_polygon_against_plane(polygon, FAR_FRUSTUM_PLANE);
 }
