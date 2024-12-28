@@ -263,7 +263,10 @@ void update(void) {
         polygon_t polygon = polygon_from_triangle(
             vec3_from_vec4(transformed_vertices[0]),
             vec3_from_vec4(transformed_vertices[1]),
-            vec3_from_vec4(transformed_vertices[2])
+            vec3_from_vec4(transformed_vertices[2]),
+            mesh_face.a_uv,
+            mesh_face.b_uv,
+            mesh_face.c_uv
         );
         
         // Clip the polygon and returns a new polygon with potential new vertices

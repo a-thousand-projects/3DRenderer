@@ -63,9 +63,10 @@ void init_frustum_planes(float fov_x, float fov_y, float z_near, float z_far) {
 	frustum_planes[FAR_FRUSTUM_PLANE].normal.z = -1;
 }
 
-polygon_t polygon_from_triangle(vec3_t v0, vec3_t v1, vec3_t v2) {
+polygon_t polygon_from_triangle(vec3_t v0, vec3_t v1, vec3_t v2, tex2_t t0, tex2_t t1, tex2_t t2) {
     polygon_t polygon = {
         .vertices = { v0, v1, v2 },
+        .texcoords =  {t0,t1,t2},
         .num_vertices = 3
     };
     return polygon;
@@ -90,6 +91,7 @@ void clip_polygon_against_plane(polygon_t* polygon, int plane) {
 
     // Declare a static array of inside vertices that will be part of the final polygon returned via parameter
     vec3_t inside_vertices[MAX_NUM_POLY_VERTICES];
+    tex2_t inside_texcoords[MAX_NUM_POLY_VERTICES];
     int num_inside_vertices = 0;
 
     // Start the current vertex with the first polygon vertex, and the previous with the last polygon vertex
