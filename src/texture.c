@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include "upng.h"
+#include "texture.h"
 
 upng_t* png_texture;
 uint32_t* mesh_texture = NULL;
@@ -23,6 +24,16 @@ void load_png_texture_data(char* filename)
         }
     }
     
+}
+
+
+tex2_t tex2_clone(tex2_t* t)
+{
+    tex2_t new_t = {
+        .u = t->u,
+        .v = t->v
+    };
+    return new_t;
 }
 
 

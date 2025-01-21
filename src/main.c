@@ -322,9 +322,9 @@ void update(void) {
                     { projected_points[2].x, projected_points[2].y, projected_points[2].z, projected_points[2].w },
                 },
                 .texcoords = {
-                    { mesh_face.a_uv.u, mesh_face.a_uv.v },
-                    { mesh_face.b_uv.u, mesh_face.b_uv.v },
-                    { mesh_face.c_uv.u, mesh_face.c_uv.v }
+                    { triangle_after_clipping.texcoords[0].u, triangle_after_clipping.texcoords[0].v },
+                    { triangle_after_clipping.texcoords[1].u, triangle_after_clipping.texcoords[1].v },
+                    { triangle_after_clipping.texcoords[2].u, triangle_after_clipping.texcoords[2].v }
                 },
                 .color = triangle_color
             };
