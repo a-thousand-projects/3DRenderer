@@ -201,9 +201,9 @@ vec2_t p = { x, y };
     interpolated_reciprocal_w = 1.0 - interpolated_reciprocal_w;
 
     // only draw the pixel is the depth value is less than the one previously in the Z buffer
-    if (interpolated_reciprocal_w < z_buffer[window_width * y + x] ){
+    if (interpolated_reciprocal_w < get_zBuffer_at(x,y) ){
         draw_pixel(x, y, colour);
-        z_buffer[window_width * y + x] = interpolated_reciprocal_w;
+        set_zBuffer_at(x,y,interpolated_reciprocal_w);
     }
 }
 
@@ -340,9 +340,9 @@ void draw_texel(
     interpolated_reciprocal_w = 1.0 - interpolated_reciprocal_w;
 
     // only draw the pixel is the depth value is less than the one previously in the Z buffer
-    if (interpolated_reciprocal_w < z_buffer[window_width * y + x] ){
+    if (interpolated_reciprocal_w < get_zBuffer_at(x,y) ){
         draw_pixel(x, y, texture[(texture_width * tex_y) + tex_x]);
-        z_buffer[window_width * y + x] = interpolated_reciprocal_w;
+        set_zBuffer_at(x,y,interpolated_reciprocal_w);
     }
 }
 
