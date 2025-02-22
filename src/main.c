@@ -42,8 +42,9 @@ mat4_t view_matrix;
 // Setup function to initialize variables and game objects
 ///////////////////////////////////////////////////////////////////////////////
 void setup(void) {
-   // Initialize render mode and triangle culling method
-
+    init_light(vec3_new(0,0,1));
+    init_camera(vec3_new(0,0,0), vec3_new(0,0,1));
+    // Initialize render mode and triangle culling method
     set_render_method(RENDER_WIRE);
     set_cull_method(CULL_BACKFACE);
     
@@ -58,6 +59,8 @@ void setup(void) {
 
     // Initialize frustum planes with a point and a normal
     init_frustum_planes(fov_x, fov_y, z_near, z_far);
+
+
 
     // Loads the vertex and face values for the mesh data structure
     //load_obj_file_data("./assets/cube.obj");
@@ -124,38 +127,48 @@ void process_input(void) {
                     break;
                 }
 
-            // Movement Keys
-            if (event.key.keysym.sym == SDLK_s) 		// Backwards
+          
+            if (event.key.keysym.sym == SDLK_w)		// Pitch Down
             {
-            camera.forward_verlocity = vec3_mul(camera.direction, 5.0 * delta_time);
-            camera.position = vec3_sub(camera.position, camera.forward_verlocity);
+                rotate_camera_pitch(3.0 * delta_time);
             }
 
-            if (event.key.keysym.sym == SDLK_w)		// Forwards
+            if (event.key.keysym.sym == SDLK_s)		// Pitch up
             {
-                camera.forward_verlocity = vec3_mul(camera.direction, 5.0 * delta_time);
-                camera.position = vec3_add(camera.position, camera.forward_verlocity);
+                rotate_camera_pitch(- 3.0 * delta_time);
             }
 
-            if (event.key.keysym.sym == SDLK_a)		// Left
+            if (event.key.keysym.sym == SDLK_LEFT)		// YAW Left
             {
-                    camera.yaw += 1.0 * delta_time;
+                rotate_camera_yaw(-1.0 * delta_time);
             }
 
-            if (event.key.keysym.sym == SDLK_d)		// Right
+            if (event.key.keysym.sym == SDLK_RIGHT)		// Yaw Right
             {
-                    camera.yaw -= 1.0 * delta_time;
+                rotate_camera_yaw(1.0 * delta_time);
             }
 
             if (event.key.keysym.sym == SDLK_UP)		// Forwards
             {
-                    camera.position.y -= 3.0 * delta_time;
+                vec3_t camera_vel = vec3_mul(get_camera_direction(), 5.0 * delta_time);
+                set_camera_forward_velocity(camera_vel);
+
+                vec3_t camera_pos  = vec3_add(get_camera_position(),get_camera_forward_velocity());
+                set_camera_position(camera_pos);
+                break;
             }
 
             if (event.key.keysym.sym == SDLK_DOWN)		// Forwards
             {
-                    camera.position.y += 3.0 * delta_time;
+                vec3_t camera_vel = vec3_mul(get_camera_direction(), 5.0 * delta_time);
+                set_camera_forward_velocity(camera_vel);
+
+                vec3_t camera_pos  = vec3_sub(get_camera_position(),get_camera_forward_velocity());
+                set_camera_position(camera_pos);
+                break;
             }
+
+            
 
             break;
         }
@@ -188,24 +201,19 @@ void update(void) {
     mesh.rotation.z += 0.0 * delta_time;
     mesh.translation.z = 5.0;
 
-    // Initialize the target looking at the positive z-axis
-    vec3_t target = { 0, 0, 1 };
-    mat4_t camera_yaw_rotation = mat4_make_rotation_y(camera.yaw);
-    camera.direction = vec3_from_vec4(mat4_mul_vec4(camera_yaw_rotation, vec4_from_vec3(target)));
-
-    // Offset the camera position in the direction where the camera is pointing at
-    target = vec3_add(camera.position, camera.direction);
-    vec3_t up_direction = { 0, 1, 0 };
     
-    // Create the view matrix
-    view_matrix = mat4_look_at(camera.position, target, up_direction);
-
     // Create scale, rotation, and translation matrices that will be used to multiply the mesh vertices
     mat4_t scale_matrix = mat4_make_scale(mesh.scale.x, mesh.scale.y, mesh.scale.z);
     mat4_t translation_matrix = mat4_make_translation(mesh.translation.x, mesh.translation.y, mesh.translation.z);
     mat4_t rotation_matrix_x = mat4_make_rotation_x(mesh.rotation.x);
     mat4_t rotation_matrix_y = mat4_make_rotation_y(mesh.rotation.y);
     mat4_t rotation_matrix_z = mat4_make_rotation_z(mesh.rotation.z);
+
+    // Update camera look at target to create vew matrix
+    vec3_t target = get_camera_lookat_target();
+    vec3_t up_direction = vec3_new(0,1,0);
+    view_matrix = mat4_look_at(get_camera_position(), target, up_direction);
+
 
     // Loop all triangle faces of our mesh
     int num_faces = array_length(mesh.faces);
@@ -324,7 +332,7 @@ void update(void) {
             }
 
             // Calculate the shade intensity based on how aliged is the normal with the flipped light direction ray
-            float light_intensity_factor = -vec3_dot(normal, light.direction);
+            float light_intensity_factor = -vec3_dot(normal, get_light_direction());
 
             // Calculate the triangle color based on the light angle
             uint32_t triangle_color = light_apply_intensity(mesh_face.color, light_intensity_factor);
